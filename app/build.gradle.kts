@@ -7,7 +7,7 @@ plugins {
 }
 
 // 版本号集中定义：versionName 与 release 产物文件名共用
-val appVersionName = "0.1.3"
+val appVersionName = "0.1.4"
 
 // 签名材料放在仓库根目录的 keystore.properties（已 gitignore），文件不存在时
 // release 产物退化为未签名——这样 clone 后的仓库仍能 assembleRelease，只是装不上设备。
@@ -26,7 +26,7 @@ android {
         applicationId = "io.github.hecate2.D7"
         minSdk = 26
         targetSdk = 35
-        versionCode = 4
+        versionCode = 5
         versionName = appVersionName
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
