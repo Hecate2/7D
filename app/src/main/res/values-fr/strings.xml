@@ -107,6 +107,7 @@
     <string name="line_equinox">Équinoxe</string>
     <string name="line_winter">Solstice d’hiver</string>
     <string name="line_today">Aujourd’hui</string>
+    <string name="line_sun">Soleil actuel</string>
     <string name="line_segments">Liaisons</string>
     <string name="line_horizon">Horizon</string>
     <string name="line_vertical">Verticale</string>

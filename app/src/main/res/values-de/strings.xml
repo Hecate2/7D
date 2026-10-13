@@ -107,6 +107,7 @@
     <string name="line_equinox">Gleichstand</string>
     <string name="line_winter">Wintersonnenwende</string>
     <string name="line_today">Heute</string>
+    <string name="line_sun">Aktuelle Sonne</string>
     <string name="line_segments">Punktverbindungen</string>
     <string name="line_horizon">Horizont</string>
     <string name="line_vertical">Lotrechte</string>

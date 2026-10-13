@@ -33,7 +33,7 @@ class ViewfinderGroundLayerTest {
 
         /** 只留地面层，排除参考弧与拍摄点对像素统计的干扰。 */
         val ONLY_GROUND = LineVisibility(
-            summer = false, equinox = false, winter = false, today = false,
+            summer = false, equinox = false, winter = false, today = false, sun = false,
             segments = false, horizon = false, vertical = false, fill = false, ground = true,
         )
     }

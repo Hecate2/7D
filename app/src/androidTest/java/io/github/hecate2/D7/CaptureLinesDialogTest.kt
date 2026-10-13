@@ -35,7 +35,7 @@ import java.time.ZoneId
 
 /**
  * 采集页「显示线」对话框的仪器测试：
- * 每条线名用线本身的颜色着色（夏至橙 / 春秋分红 / 冬至蓝 / 今日白 / 参考线灰），
+ * 每条线名用线本身的颜色着色（夏至橙 / 春秋分红 / 冬至蓝 / 今日白 / 当前太阳金 / 参考线灰），
  * 且着色之后勾选与持久化仍照旧工作。
  */
 @RunWith(AndroidJUnit4::class)
@@ -80,6 +80,7 @@ class CaptureLinesDialogTest {
         R.string.line_equinox to R.color.equinox,
         R.string.line_winter to R.color.winter,
         R.string.line_today to R.color.paper,
+        R.string.line_sun to R.color.sun,
         R.string.line_segments to R.color.paper,
         R.string.line_horizon to R.color.smoke,
         R.string.line_vertical to R.color.smoke,
@@ -136,6 +137,7 @@ class CaptureLinesDialogTest {
         settings.setOn(CaptureLine.EQUINOX, true)
         settings.setOn(CaptureLine.WINTER, true)
         settings.setOn(CaptureLine.TODAY, true)
+        settings.setOn(CaptureLine.SUN, true)
         settings.setOn(CaptureLine.SEGMENTS, true)
         settings.setOn(CaptureLine.HORIZON, false)
         settings.setOn(CaptureLine.VERTICAL, false)

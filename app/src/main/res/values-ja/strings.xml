@@ -107,6 +107,7 @@
     <string name="line_equinox">春分・秋分の軌道</string>
     <string name="line_winter">冬至の軌道</string>
     <string name="line_today">今日の軌道</string>
+    <string name="line_sun">今の太陽</string>
     <string name="line_segments">点の結線</string>
     <string name="line_horizon">地平線</string>
     <string name="line_vertical">鉛直線</string>

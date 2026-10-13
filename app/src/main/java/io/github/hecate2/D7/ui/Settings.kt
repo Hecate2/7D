@@ -58,6 +58,7 @@ class Settings(context: Context) {
         equinox = isOn(CaptureLine.EQUINOX),
         winter = isOn(CaptureLine.WINTER),
         today = isOn(CaptureLine.TODAY),
+        sun = isOn(CaptureLine.SUN),
         segments = isOn(CaptureLine.SEGMENTS),
         horizon = isOn(CaptureLine.HORIZON),
         vertical = isOn(CaptureLine.VERTICAL),
@@ -67,7 +68,7 @@ class Settings(context: Context) {
 }
 
 /**
- * 「显示线」的九个条目：对话框文案、线色、持久化键与默认显隐。
+ * 「显示线」的十个条目：对话框文案、线色、持久化键与默认显隐。
  *
  * 对话框条目顺序就是 [entries] 的顺序，设置读写也按条目本身走，所以加一项只需在这里加一行；
  * 下标的含义不再散在三个文件里靠注释对齐。线色与
@@ -88,6 +89,7 @@ enum class CaptureLine(
     EQUINOX(R.string.line_equinox, R.color.equinox, "line_equinox", true),
     WINTER(R.string.line_winter, R.color.winter, "line_winter", true),
     TODAY(R.string.line_today, R.color.paper, "line_today", true),
+    SUN(R.string.line_sun, R.color.sun, "line_sun", true),
     SEGMENTS(R.string.line_segments, R.color.paper, "line_segments", true),
     HORIZON(R.string.line_horizon, R.color.smoke, "line_horizon", false),
     VERTICAL(R.string.line_vertical, R.color.smoke, "line_vertical", false),

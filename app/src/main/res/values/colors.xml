@@ -20,6 +20,8 @@
     <color name="winter">#FF378ADD</color>
     <color name="equinox">#FFE24B4A</color>
     <color name="summer">#FFEF9F27</color>
+    <!-- 此刻太阳：比夏至橙更亮的金，免得被同色系的夏至虚线认错 -->
+    <color name="sun">#FFFFC107</color>
     <!-- 按住快门的进度色：比轨迹橙更亮的琥珀色，黑底取景器上最显眼 -->
     <color name="press">#FFFFB300</color>
     <!-- 精度指示四态：高绿 / 中黄 / 低红 / 未知灰 -->

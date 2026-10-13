@@ -125,6 +125,7 @@
     <string name="line_equinox">春秋分轨迹</string>
     <string name="line_winter">冬至轨迹</string>
     <string name="line_today">今日轨迹</string>
+    <string name="line_sun">当前太阳</string>
     <string name="line_segments">拍摄点连线</string>
     <string name="line_horizon">地平线</string>
     <string name="line_vertical">铅垂线</string>

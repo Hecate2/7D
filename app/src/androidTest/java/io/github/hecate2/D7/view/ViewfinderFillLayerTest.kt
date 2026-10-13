@@ -39,9 +39,9 @@ class ViewfinderFillLayerTest {
         const val W = 400
         const val H = 800
 
-        /** 只留填充层，排除地面层与参考弧对像素统计的干扰。 */
+        /** 只留填充层，排除地面层、参考弧与太阳标记对像素统计的干扰。 */
         val ONLY_FILL = LineVisibility(
-            summer = false, equinox = false, winter = false, today = false,
+            summer = false, equinox = false, winter = false, today = false, sun = false,
             segments = false, horizon = false, vertical = false, fill = true, ground = false,
         )
     }

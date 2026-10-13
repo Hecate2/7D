@@ -107,6 +107,7 @@
     <string name="line_equinox">춘분·추분 궤적</string>
     <string name="line_winter">동지 궤적</string>
     <string name="line_today">오늘 궤적</string>
+    <string name="line_sun">현재 태양</string>
     <string name="line_segments">점 연결선</string>
     <string name="line_horizon">지평선</string>
     <string name="line_vertical">수직선</string>

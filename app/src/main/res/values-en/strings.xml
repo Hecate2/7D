@@ -107,6 +107,7 @@
     <string name="line_equinox">Equinox</string>
     <string name="line_winter">Winter solstice</string>
     <string name="line_today">Today</string>
+    <string name="line_sun">Current sun</string>
     <string name="line_segments">Point joins</string>
     <string name="line_horizon">Horizon</string>
     <string name="line_vertical">Vertical</string>

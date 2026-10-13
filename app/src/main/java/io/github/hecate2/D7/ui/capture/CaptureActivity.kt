@@ -178,6 +178,7 @@ class CaptureActivity : ComponentActivity() {
         camera = CameraController(this)
 
         binding.overlay.latDeg = group.lat
+        binding.overlay.lonDeg = group.lon
         binding.overlay.focalPxProvider = { w, h ->
             camera.focalPx(w, h, binding.overlay.display?.rotation ?: Surface.ROTATION_0)
         }
@@ -253,6 +254,10 @@ class CaptureActivity : ComponentActivity() {
 
     private fun bindGroup(group: GroupRecord) {
         binding.groupName.text = group.name
+        // 地点能在结果页改（见 ui/GroupEditor.kt）：改完这一页的参考弧与此刻太阳都得跟着换，
+        // 同值赋值由叠加层自己短路，不会白清缓存
+        binding.overlay.latDeg = group.lat
+        binding.overlay.lonDeg = group.lon
         regionPoints = group.regionList(region)
         binding.overlay.points = regionPoints
         binding.coverageBar.submitExternal(group.external)

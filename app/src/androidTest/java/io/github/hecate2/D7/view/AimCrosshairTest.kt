@@ -33,7 +33,7 @@ class AimCrosshairTest {
 
         /** 关掉所有线：此时 [ViewfinderOverlayView.onDraw] 只画十字线。 */
         val NO_LINES = LineVisibility(
-            summer = false, equinox = false, winter = false, today = false,
+            summer = false, equinox = false, winter = false, today = false, sun = false,
             segments = false, horizon = false, vertical = false, fill = false, ground = false,
         )
     }

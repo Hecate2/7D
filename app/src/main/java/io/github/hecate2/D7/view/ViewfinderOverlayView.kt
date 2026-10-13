@@ -33,6 +33,8 @@ data class LineVisibility(
     val equinox: Boolean = true,
     val winter: Boolean = true,
     val today: Boolean = true,
+    /** 此刻太阳所在的那一点。 */
+    val sun: Boolean = true,
     val segments: Boolean = true,
     val horizon: Boolean = false,
     val vertical: Boolean = false,
@@ -43,11 +45,12 @@ data class LineVisibility(
 )
 
 /**
- * 取景器叠加层：太阳参考弧、地平线与铅垂线、拍摄点与连线、十字线。
+ * 取景器叠加层：太阳参考弧与此刻太阳、地平线与铅垂线、拍摄点与连线、十字线。
  *
  * 投影为针孔模型：世界方向（东、北、天）点乘屏幕右/上/后摄视轴得相机坐标，
  * 屏幕坐标 = 中心 + (x/z, -y/z) × 焦距像素；z ≤ 0.01 视为在相机背后，剔除并断线。
- * 参考弧按赤纬采样小时角生成，只由纬度与日期决定，手机姿态决定显示哪一段。
+ * 参考弧按赤纬采样小时角生成，只由纬度与日期决定，手机姿态决定显示哪一段；
+ * 此刻太阳那一点另要经度与当前时刻，见 [drawSunMarker]。
  */
 class ViewfinderOverlayView(context: Context, attrs: AttributeSet? = null) : View(context, attrs) {
 
@@ -74,10 +77,30 @@ class ViewfinderOverlayView(context: Context, attrs: AttributeSet? = null) : Vie
     /** 所在纬度（南半球参考弧镜像）。 */
     var latDeg: Double = 39.0
         set(value) {
+            // 采集页每次收到数据都同步一遍地点，同值时早退，免得白清一次弧缓存
+            if (value == field) return
             field = value
             arcCache.clear()
             invalidate()
         }
+
+    /**
+     * 所在经度。参考弧只由纬度与日期决定，用不到它；要用它的是此刻太阳（[drawSunMarker]），
+     * 时角要按当地经度算。组内经纬度可在结果页改（见 `ui/GroupEditor.kt`），改完由采集页同步过来。
+     */
+    var lonDeg: Double = 116.4
+        set(value) {
+            if (value == field) return
+            field = value
+            invalidate()
+        }
+
+    /**
+     * 当前时间源（UTC 毫秒）。姿态每刷新一帧就重画一次，所以画出来的始终是「此刻」。
+     * 留成可替换是为了测试能钉住时刻：太阳位置随时间走，「此刻画在哪儿」与「落到
+     * 地平线以下不画」这类断言没法拿真实时钟去撞。
+     */
+    var nowMillis: () -> Long = System::currentTimeMillis
 
     /** 当前姿态（瞬时向量）；null 时只画十字线。 */
     var pose: Pose? = null
@@ -126,6 +149,7 @@ class ViewfinderOverlayView(context: Context, attrs: AttributeSet? = null) : Vie
     private val colorPaper = ContextCompat.getColor(context, R.color.paper)
     private val colorMoon = ContextCompat.getColor(context, R.color.moon)
     private val colorSmoke = ContextCompat.getColor(context, R.color.smoke)
+    private val colorSun = ContextCompat.getColor(context, R.color.sun)
 
     private fun arcPaint(color: Int, dashed: Boolean): Paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.STROKE
@@ -184,6 +208,29 @@ class ViewfinderOverlayView(context: Context, attrs: AttributeSet? = null) : Vie
         textAlign = Paint.Align.CENTER
     }
 
+    /**
+     * 太阳标记：琥珀圆盘 + 同色柔光 + 细黑描边。
+     *
+     * 取景画面一半是亮天空、一半是暗楼体，单一颜色在某一侧总会糊掉，所以三层各自解决一件事：
+     * 圆盘给出「就在这儿」，柔光让它在暗楼体上有光晕，黑描边让它在亮天空上仍有边界。
+     * 颜色取比夏至橙更亮的金，免得被那条同色系的虚线认错。
+     */
+    private val sunDiscPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        style = Paint.Style.FILL
+        color = colorSun
+    }
+    private val sunGlowPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        style = Paint.Style.FILL
+        color = colorSun
+        alpha = SUN_GLOW_ALPHA
+    }
+    private val sunRingPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        style = Paint.Style.STROKE
+        strokeWidth = dp(1f)
+        color = Color.BLACK
+        alpha = 160
+    }
+
     private companion object {
         /** 参考弧按小时角 [ARC_HA_STEP_DEG] 度采样，-180..180 含两端共 181 点。 */
         const val ARC_HA_STEP_DEG = 2.0
@@ -204,6 +251,13 @@ class ViewfinderOverlayView(context: Context, attrs: AttributeSet? = null) : Vie
          * 猜测闭合点而拉出错误斜边。地面层与遮挡填充共用，只差一个方向。
          */
         const val FAR_REACH = 100_000f
+
+        /** 太阳标记的圆盘半径与柔光半径（dp）；柔光只是让暗楼体上的那一点有光晕。 */
+        const val SUN_DISC_DP = 5f
+        const val SUN_GLOW_DP = 10f
+
+        /** 柔光透明度：再淡就看不见，再浓就把圆盘本身糊成一团。 */
+        const val SUN_GLOW_ALPHA = 64
     }
 
     /** 地面层：地平线以下的土色，仿飞机姿态仪。 */
@@ -260,13 +314,17 @@ class ViewfinderOverlayView(context: Context, attrs: AttributeSet? = null) : Vie
         if (show.ground) drawGround(canvas, projector)
         if (show.fill) drawSkylineFill(canvas, projector)
 
+        // 一次取时刻，供今日弧与此刻太阳共用：两处各读一次钟的话，
+        // 恰好在午夜前后跨日时会算出对不上的两条轨迹
+        val now = nowMillis()
         val summerDecl = if (latDeg >= 0) 23.44 else -23.44
         if (show.summer) drawSunArc(canvas, projector, summerDecl, summerArc)
         if (show.equinox) drawSunArc(canvas, projector, 0.0, equinoxArc)
         if (show.winter) drawSunArc(canvas, projector, -summerDecl, winterArc)
-        if (show.today) {
-            drawSunArc(canvas, projector, Solar.declinationDeg(System.currentTimeMillis()), todayArc)
-        }
+        // 今日弧的赤纬取「此刻」那个值，太阳标记读的也是同一个值，两点才落在同一条线上
+        if (show.today) drawSunArc(canvas, projector, Solar.declinationDeg(now), todayArc)
+        // 太阳标记跟着参考弧走，所以画在弧这一层：用户自己的拍摄点与连线仍压在最上面
+        if (show.sun) drawSunMarker(canvas, projector, now)
         if (show.horizon || show.vertical) {
             ensureGuideAzimuths()
             if (show.horizon) drawTrack(canvas, projector, smokeLine, horizonTrack)
@@ -521,6 +579,31 @@ class ViewfinderOverlayView(context: Context, attrs: AttributeSet? = null) : Vie
     /** 给定赤纬的全天参考弧（按小时角 [ARC_HA_STEP_DEG] 度步长采样），地平线以下不画。 */
     private fun drawSunArc(canvas: Canvas, projector: Projector, declDeg: Double, paint: Paint) =
         drawTrack(canvas, projector, paint, arcTrack(declDeg), cutBelowSunrise = true)
+
+    /**
+     * 此刻太阳所在的那一点：琥珀圆盘一枚。
+     *
+     * 位置与今日弧同源——同一次 [now]、同一个赤纬（[Solar.position] 内部算的赤纬
+     * 就是 `Solar.declinationDeg` 那一个）、同一套几何高度角（不含大气折射），所以标记
+     * 必定落在那条白线上，不会浮在它旁边。地平线附近那最多 0.5 度的大气折射宁可不要，
+     * 也不要一个和轨迹对不上的点。太阳落到地平线以下（含等效上缘的
+     * [Solar.SUNRISE_THRESHOLD_DEG] 阈值）就不画，与今日弧一起从画面里消失。
+     *
+     * 每帧现算一次：约二十次超越函数，而同帧光把上千个采样点投到屏幕上就要两千来次三角
+     * 函数，这点开销不到百分之一，换来的是不必管「缓存什么时候作废」（改经度、跨日、
+     * 跨半球各是一种忘法）。真正需要按天缓存的是一天一千四百多个采样点的算法，
+     * 见 [Solar.DayTrack]。
+     *
+     * 相机背后（z ≤ 0）由投影自己剔除，不必另判。
+     */
+    private fun drawSunMarker(canvas: Canvas, projector: Projector, now: Long) {
+        val sun = Solar.position(now, latDeg, lonDeg, refraction = false)
+        if (sun.elevationDeg < Solar.SUNRISE_THRESHOLD_DEG) return
+        if (!projector.project(sun.azimuthDeg, sun.elevationDeg, pt)) return
+        canvas.drawCircle(pt[0], pt[1], dp(SUN_GLOW_DP), sunGlowPaint)
+        canvas.drawCircle(pt[0], pt[1], dp(SUN_DISC_DP), sunDiscPaint)
+        canvas.drawCircle(pt[0], pt[1], dp(SUN_DISC_DP), sunRingPaint)
+    }
 
     /** 地平线：沿方位展开 ±75°，仰角恒为 0。 */
     private val horizonOffsets = DoubleArray(61) { -75.0 + it * 2.5 }

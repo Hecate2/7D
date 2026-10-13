@@ -107,6 +107,7 @@
     <string name="line_equinox">Равноденствие</string>
     <string name="line_winter">Зимнее солнцестояние</string>
     <string name="line_today">Сегодня</string>
+    <string name="line_sun">Солнце сейчас</string>
     <string name="line_segments">Соединения</string>
     <string name="line_horizon">Горизонт</string>
     <string name="line_vertical">Вертикаль</string>
