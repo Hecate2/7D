@@ -6,9 +6,7 @@
     <!-- Photo sets -->
     <string name="groups_title">Photo sets</string>
     <string name="groups_keep_on">Keep screen on</string>
-    <string name="groups_new">+ New</string>
-    <string name="groups_subtitle">One set per window · kept on this phone</string>
-    <string name="groups_empty">No photo sets yet\nTap “+ New” and name it\nStand at the window you want to measure</string>
+    <string name="groups_empty">No sets yet. Tap + to start.</string>
     <string name="groups_export_data">Export data</string>
     <string name="groups_import_data">Import data</string>
 
@@ -36,9 +34,9 @@
     <string name="gps_locating">Locating…</string>
     <string name="gps_done">Located %1$s</string>
     <string name="gps_done_accuracy">Located %1$s · ±%2$d m</string>
-    <string name="gps_failed">No fix: try somewhere open, or type the coordinates</string>
-    <string name="hemisphere_north">North: face south, shoot right (W) to left (E)</string>
-    <string name="hemisphere_south">South: face north, shoot right (E) to left (W)</string>
+    <string name="gps_failed">No fix. Enter the coordinates by hand.</string>
+    <string name="hemisphere_north">North: face south, shoot west to east</string>
+    <string name="hemisphere_south">South: face north, shoot east to west</string>
     <string name="hemisphere_tropic">Equator: the sun swaps sides, so shoot both</string>
     <string name="hemisphere_unknown">Enter a latitude for shooting tips</string>
     <string name="invalid_latlon">Enter a valid latitude (−90..90) and longitude (−180..180)</string>
@@ -51,7 +49,7 @@
     <string name="menu_delete">Delete</string>
     <string name="menu_export">Export</string>
     <string name="delete_group_title">Delete photo set</string>
-    <string name="delete_group_message">Delete the angles and group data of “%1$s”.</string>
+    <string name="delete_group_message">Delete all data of “%1$s”.</string>
     <string name="delete_group_with_photos">Also delete %1$d photos (cannot be undone)</string>
     <string name="delete_group_photos_failed">%1$d photos could not be deleted</string>
 
@@ -85,8 +83,8 @@
     <string name="capture_focus">Focus</string>
     <string name="capture_camera_needed">Camera permission needed to shoot\nTap to grant</string>
     <string name="capture_camera_failed">Camera failed; angles can still be recorded</string>
-    <string name="capture_sensor_missing">No motion sensor; elevation and azimuth unavailable</string>
-    <string name="capture_no_pose">Waiting for a sensor reading</string>
+    <string name="capture_sensor_missing">No motion sensor on this phone</string>
+    <string name="capture_no_pose">Reading the sensor…</string>
     <string name="capture_ceiling_longpress">Ceiling mode: tap only</string>
     <string name="capture_photo_failed">Photo failed to save; the angle was kept</string>
     <string name="capture_deleted">Point %1$d deleted</string>
@@ -97,7 +95,7 @@
     <string name="capture_calib_high">High</string>
     <string name="capture_calib_mid">Med</string>
     <string name="capture_calib_low">Low · fig. 8</string>
-    <string name="capture_below_horizon">Elevation below 0°\nRaise the lens above the horizon</string>
+    <string name="capture_below_horizon">Elevation below 0°\nRaise the lens</string>
     <string name="capture_jitter_label">Reading</string>
     <string name="capture_jitter_unknown">?</string>
     <string name="capture_jitter_high">High</string>
@@ -127,7 +125,7 @@
     <string name="result_mode_external">Outside only</string>
     <string name="result_mode_both">Outside + ceiling</string>
     <string name="result_mode_ceiling">Ceiling only</string>
-    <string name="result_mode_ceiling_locked">Shoot the ceiling to unlock these</string>
+    <string name="result_mode_ceiling_locked">Shoot the ceiling first</string>
     <string name="result_mode_ceiling_empty">Ceiling emptied; back to Outside only</string>
     <string name="result_main_label">%1$s direct sun · %2$s</string>
     <string name="result_computing">Calculating…</string>
@@ -153,21 +151,21 @@
     <string name="result_delete">Del</string>
     <string name="result_photo_view">Shot photo</string>
     <string name="result_photo_close_hint">Tap anywhere to close</string>
-    <string name="result_photo_missing">Photo is no longer in the album</string>
+    <string name="result_photo_missing">Photo is gone from the album</string>
     <string name="result_export_csv">Export CSV</string>
     <string name="result_export_image">Export image</string>
     <string name="result_go_capture">Back to capture</string>
     <string name="result_export_done">Saved to %1$s</string>
-    <string name="result_export_failed">Export failed: check space or permission</string>
+    <string name="result_export_failed">Export failed: check free space</string>
     <string name="result_export_busy">Exporting; please wait</string>
     <string name="result_no_data">Shoot something first</string>
-    <string name="result_coverage_toofew">Too few points; the result is likely too optimistic</string>
-    <string name="result_coverage_low">Only %1$d%% of the half-circle; may be incomplete</string>
-    <string name="result_coverage_mid">%1$d%% of the half-circle; add the two ends</string>
+    <string name="result_coverage_toofew">Too few points. Likely too optimistic.</string>
+    <string name="result_coverage_low">Only %1$d%% of the half-circle</string>
+    <string name="result_coverage_mid">%1$d%% of the half-circle. Add the two ends.</string>
     <string name="result_coverage_ok">%1$d%% of the half-circle</string>
-    <string name="result_coverage_ceiling_toofew">Too few ceiling points; the result is likely too pessimistic</string>
-    <string name="result_coverage_ceiling_low">Ceiling half-circle only %1$d%%; may be incomplete</string>
-    <string name="result_coverage_ceiling_mid">Ceiling half-circle %1$d%%; add the two ends</string>
+    <string name="result_coverage_ceiling_toofew">Too few ceiling points. Likely too pessimistic.</string>
+    <string name="result_coverage_ceiling_low">Ceiling half-circle only %1$d%%</string>
+    <string name="result_coverage_ceiling_mid">Ceiling half-circle %1$d%%. Add the two ends.</string>
 
     <!-- Result: date names / timezone / yearly curve -->
     <string name="result_date_winter">Winter solstice</string>
@@ -195,11 +193,11 @@
 
     <!-- 存档导出/导入：走系统文件选择器，落点由用户当场决定，所以文案里不写具体目录 -->
     <string name="export_store_file_name">D7-photo-sets-%1$s.json</string>
-    <string name="export_store_empty">No photo sets to export yet</string>
+    <string name="export_store_empty">No photo sets to export</string>
     <string name="export_store_done">Exported %1$d photo sets</string>
-    <string name="export_store_failed">Export failed: the chosen location is not writable</string>
+    <string name="export_store_failed">Export failed: location not writable</string>
     <string name="import_store_title">Import data</string>
-    <string name="import_store_message">This file holds %1$d photo sets. Importing replaces the current %2$d and cannot be undone.\n\nThe file carries angles and coordinates only, not the photos themselves: those stay in the album of the phone that took them. Imported sets carry no photos, so the thumbnail cell of every point stays empty.</string>
+    <string name="import_store_message">This file holds %1$d photo sets. Importing replaces the current %2$d and cannot be undone.\n\nIt carries angles and coordinates only, no photos.</string>
     <string name="import_store_failed">Not a valid D7 file</string>
     <string name="import_store_done">Imported %1$d photo sets</string>
     <string name="export_csv_title">D7 sunlight data</string>
@@ -232,7 +230,7 @@
     <string name="export_png_gap_note">(all from gaps)</string>
     <string name="export_png_winter">Winter solstice (lowest sun) direct %1$s</string>
     <string name="export_png_gb">Great Cold 8–16 effective direct %1$s</string>
-    <string name="export_png_footer">Seven Days D7 · offline calculation · about 2–4° azimuth and 1° elevation error · for reference, not an official daylight report</string>
+    <string name="export_png_footer">Seven Days D7 · offline · about 2–4° azimuth and 1° elevation error · for reference, not an official report</string>
 
     <!-- Point editing -->
     <string name="edit">Edit</string>
@@ -245,9 +243,9 @@
     <string name="bulk_edit_el_offset">Elevation offset</string>
     <string name="bulk_edit_apply_offset">Apply offset</string>
     <string name="bulk_edit_offset_invalid">Offsets must be numbers, e.g. -2 or 1.5</string>
-    <string name="bulk_edit_hint">One point per line: “azimuth elevation”, with horizon (or h, 0) meaning the line joins the previous one via the horizon; the first line cannot. Photos are inherited by matching angles, else by order; added lines have no photo. Clearing the text deletes every point in that zone.</string>
-    <string name="bulk_edit_first_horizon">Line 1 has no previous point, so it cannot be marked horizon</string>
+    <string name="bulk_edit_hint">One point per line, “azimuth elevation”. A third word, horizon (or h, 0), runs the join to the previous line via the horizon; line 1 cannot. Clearing the text deletes the whole zone.</string>
+    <string name="bulk_edit_first_horizon">Line 1 has no previous point, so it cannot be horizon</string>
     <string name="bulk_edit_clear_title">Clear zone</string>
-    <string name="bulk_edit_clear_message">Delete all points in %1$d zones?\nPhotos stay in the gallery, but these angles cannot be recovered.</string>
-    <string name="bulk_edit_parse_error">Line %1$d cannot be read; use “236.2 18.4” or “236.2 18.4 horizon”</string>
+    <string name="bulk_edit_clear_message">Delete all points in %1$d zones?\nPhotos stay in the gallery. These angles cannot be recovered.</string>
+    <string name="bulk_edit_parse_error">Line %1$d should read “236.2 18.4” or “236.2 18.4 horizon” (h or 0 also works)</string>
 </resources>

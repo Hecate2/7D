@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 空列表页那枚特大加号。和 ic_plus 一样描边圆头，但不能直接把它放大用：
+     矢量的线宽随显示尺寸等比放大，24dp 的 1.9 放到 72dp 就成了 5.7，粗到像个十字架。
+     这里把臂展从 10 个单位放到 14、线宽放到 2.4，比例（线宽/臂展 17%）与 ic_plus
+     的 19% 接近，放大之后仍是同一支笔画的。 -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:tint="@color/paper"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <path
+        android:pathData="M12,5 L12,19 M5,12 L19,12"
+        android:strokeColor="@color/paper"
+        android:strokeLineCap="round"
+        android:strokeWidth="2.4" />
+</vector>

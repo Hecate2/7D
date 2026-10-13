@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 加号：标题栏「新建」键与空列表页那枚大号加号共用这一份几何，只是显示尺寸不同。
+     线宽 1.9 与圆头端点跟手电筒/对焦/常亮/存档一套保持一致；横竖各 10 个单位，
+     居中于 (12,12)。填充色由使用处的 imageTintList 决定（描边键上是白，实心白底上是黑）。 -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:tint="@color/paper"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <path
+        android:pathData="M12,7 L12,17 M7,12 L17,12"
+        android:strokeColor="@color/paper"
+        android:strokeLineCap="round"
+        android:strokeWidth="1.9" />
+</vector>

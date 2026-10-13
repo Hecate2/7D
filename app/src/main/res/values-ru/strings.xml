@@ -6,9 +6,7 @@
     <!-- Серии съёмок -->
     <string name="groups_title">Серии</string>
     <string name="groups_keep_on">Экран не гаснет</string>
-    <string name="groups_new">+ Новая</string>
-    <string name="groups_subtitle">Одна серия на окно · хранится на телефоне</string>
-    <string name="groups_empty">Серий пока нет\nНажмите «+ Новая» и дайте имя\nВстаньте у нужного окна</string>
+    <string name="groups_empty">Серий пока нет. Нажмите + чтобы начать.</string>
     <string name="groups_export_data">Выгрузить данные</string>
     <string name="groups_import_data">Загрузить данные</string>
 
@@ -36,9 +34,9 @@
     <string name="gps_locating">Определение…</string>
     <string name="gps_done">Координаты %1$s</string>
     <string name="gps_done_accuracy">Координаты %1$s · ±%2$d м</string>
-    <string name="gps_failed">Сигнала нет: выйдите на улицу или введите координаты вручную</string>
-    <string name="hemisphere_north">Север: смотрите на юг, справа (З) налево (В)</string>
-    <string name="hemisphere_south">Юг: смотрите на север, справа (В) налево (З)</string>
+    <string name="gps_failed">Сигнала нет. Введите координаты вручную.</string>
+    <string name="hemisphere_north">Север: смотрите на юг, с запада на восток</string>
+    <string name="hemisphere_south">Юг: смотрите на север, с востока на запад</string>
     <string name="hemisphere_tropic">Экватор: солнце меняет сторону — снимите обе</string>
     <string name="hemisphere_unknown">Введите широту для подсказок</string>
     <string name="invalid_latlon">Проверьте широту (−90..90) и долготу (−180..180)</string>
@@ -51,7 +49,7 @@
     <string name="menu_delete">Удалить</string>
     <string name="menu_export">Экспорт</string>
     <string name="delete_group_title">Удалить серию</string>
-    <string name="delete_group_message">Удалить углы и данные серии «%1$s».</string>
+    <string name="delete_group_message">Удалить все данные серии «%1$s».</string>
     <string name="delete_group_with_photos">Также удалить %1$d фото (необратимо)</string>
     <string name="delete_group_photos_failed">Не удалось удалить %1$d фото</string>
 
@@ -85,8 +83,8 @@
     <string name="capture_focus">Фокус</string>
     <string name="capture_camera_needed">Нужен доступ к камере\nНажмите, чтобы дать</string>
     <string name="capture_camera_failed">Камера не запустилась; углы записываются</string>
-    <string name="capture_sensor_missing">Нет датчика ориентации; высота и азимут недоступны</string>
-    <string name="capture_no_pose">Ждём показания датчика</string>
+    <string name="capture_sensor_missing">Нет датчика ориентации</string>
+    <string name="capture_no_pose">Читаем показания датчика…</string>
     <string name="capture_ceiling_longpress">У потолка — только нажатие</string>
     <string name="capture_photo_failed">Фото не сохранено; угол сохранён</string>
     <string name="capture_deleted">Точка %1$d удалена</string>
@@ -97,7 +95,7 @@
     <string name="capture_calib_high">точно</string>
     <string name="capture_calib_mid">средне</string>
     <string name="capture_calib_low">неточно · 8</string>
-    <string name="capture_below_horizon">Высота ниже 0°\nПоднимите объектив над горизонт</string>
+    <string name="capture_below_horizon">Высота ниже 0°\nПоднимите объектив</string>
     <string name="capture_jitter_label">Точность</string>
     <string name="capture_jitter_unknown">?</string>
     <string name="capture_jitter_high">высокая</string>
@@ -127,7 +125,7 @@
     <string name="result_mode_external">Только снаружи</string>
     <string name="result_mode_both">Снаружи + потолок</string>
     <string name="result_mode_ceiling">Только потолок</string>
-    <string name="result_mode_ceiling_locked">Снимите потолок, чтобы открыть эти два</string>
+    <string name="result_mode_ceiling_locked">Сначала снимите потолок</string>
     <string name="result_mode_ceiling_empty">Потолок очищен; вернулись к «только снаружи»</string>
     <string name="result_main_label">%1$s прямой свет · %2$s</string>
     <string name="result_computing">Считаем…</string>
@@ -153,21 +151,21 @@
     <string name="result_delete">Уд</string>
     <string name="result_photo_view">Снимок</string>
     <string name="result_photo_close_hint">Нажмите, чтобы закрыть</string>
-    <string name="result_photo_missing">Снимка больше нет в галерее</string>
+    <string name="result_photo_missing">Снимка нет в галерее</string>
     <string name="result_export_csv">CSV</string>
     <string name="result_export_image">Картинка</string>
     <string name="result_go_capture">Продолжить съёмку</string>
     <string name="result_export_done">Сохранено в %1$s</string>
-    <string name="result_export_failed">Ошибка экспорта: проверьте место и права</string>
+    <string name="result_export_failed">Ошибка экспорта: проверьте место</string>
     <string name="result_export_busy">Идёт экспорт, подождите</string>
     <string name="result_no_data">Сначала что-нибудь снимите</string>
-    <string name="result_coverage_toofew">Слишком мало точек; оценка, скорее всего, слишком оптимистична</string>
-    <string name="result_coverage_low">Только %1$d%% полуокружности; может быть не всё</string>
-    <string name="result_coverage_mid">%1$d%% полуокружности; доберите края</string>
+    <string name="result_coverage_toofew">Слишком мало точек. Оценка слишком оптимистична.</string>
+    <string name="result_coverage_low">Только %1$d%% полуокружности</string>
+    <string name="result_coverage_mid">%1$d%% полуокружности. Доберите края.</string>
     <string name="result_coverage_ok">%1$d%% полуокружности</string>
-    <string name="result_coverage_ceiling_toofew">Слишком мало точек потолка; оценка, скорее, слишком осторожна</string>
-    <string name="result_coverage_ceiling_low">Потолок только %1$d%%; может быть не всё</string>
-    <string name="result_coverage_ceiling_mid">Потолок %1$d%%; доберите края</string>
+    <string name="result_coverage_ceiling_toofew">Слишком мало точек потолка. Оценка слишком осторожна.</string>
+    <string name="result_coverage_ceiling_low">Потолок только %1$d%%</string>
+    <string name="result_coverage_ceiling_mid">Потолок %1$d%%. Доберите края.</string>
 
     <!-- Результат: даты / часовой пояс / годовая кривая -->
     <string name="result_date_winter">День солнцестояния</string>
@@ -195,11 +193,11 @@
 
     <!-- 存档导出/导入：走系统文件选择器，落点由用户当场决定，所以文案里不写具体目录 -->
     <string name="export_store_file_name">D7-серии-%1$s.json</string>
-    <string name="export_store_empty">Пока нечего выгружать</string>
+    <string name="export_store_empty">Нечего выгружать</string>
     <string name="export_store_done">Выгружено серий: %1$d</string>
-    <string name="export_store_failed">Ошибка выгрузки: в выбранное место нельзя записать</string>
+    <string name="export_store_failed">Ошибка выгрузки: нет доступа на запись</string>
     <string name="import_store_title">Загрузка данных</string>
-    <string name="import_store_message">В файле серий: %1$d. При загрузке они заменят текущие %2$d, отменить это не получится.\n\nВ файле только углы и координаты, без самих фотографий: они остаются в галерее того телефона, где были сняты. У загруженных серий фотографий нет, поэтому ячейка миниатюры у каждой точки пустая.</string>
+    <string name="import_store_message">В файле серий: %1$d. Загрузка заменит текущие %2$d, отменить это не получится.\n\nВ нём только углы и координаты, без фотографий.</string>
     <string name="import_store_failed">Это не файл D7</string>
     <string name="import_store_done">Загружено серий: %1$d</string>
     <string name="export_csv_title">D7 данные о солнце</string>
@@ -232,7 +230,7 @@
     <string name="export_png_gap_note">(всё из разрывов)</string>
     <string name="export_png_winter">Солнцестояние (самое низкое солнце) прямой %1$s</string>
     <string name="export_png_gb">Большой холод 8–16 засвет прямой %1$s</string>
-    <string name="export_png_footer">Семь дней D7 · расчёт офлайн · погрешность азимута 2–4°, высоты 1° · для ориентира, не заменяет официальный расчёт инсоляции</string>
+    <string name="export_png_footer">Семь дней D7 · расчёт офлайн · погрешность азимута 2–4°, высоты 1° · для ориентира, не заменяет официальный расчёт</string>
 
     <!-- Правка точек -->
     <string name="edit">Правка</string>
@@ -245,9 +243,9 @@
     <string name="bulk_edit_el_offset">Сдвиг высоты</string>
     <string name="bulk_edit_apply_offset">Применить</string>
     <string name="bulk_edit_offset_invalid">Сдвиг — число, напр. -2 или 1.5</string>
-    <string name="bulk_edit_hint">По точке в строке: «азимут высота»; horizon (или h, 0) соединяет строку с предыдущей по горизонту, первой это нельзя. Фото наследуются по углам, иначе по порядку; новые строки без фото. Очистка текста удаляет все точки этой зоны.</string>
+    <string name="bulk_edit_hint">По точке в строке, «азимут высота». Третье слово horizon (или h, 0) ведёт соединение с предыдущей строкой по горизонту; в первой строке нельзя. Пустой текст удаляет всю зону.</string>
     <string name="bulk_edit_first_horizon">У первой строки нет предыдущей, горизонт нельзя</string>
     <string name="bulk_edit_clear_title">Очистить зону</string>
-    <string name="bulk_edit_clear_message">Удалить все точки в %1$d зонах?\nФото останутся в галерее, но эти углы восстановить нельзя.</string>
-    <string name="bulk_edit_parse_error">Строку %1$d не разобрать; напишите «236.2 18.4» или «236.2 18.4 horizon»</string>
+    <string name="bulk_edit_clear_message">Удалить все точки в %1$d зонах?\nФото останутся в галерее, но эти углы не вернуть.</string>
+    <string name="bulk_edit_parse_error">Строка %1$d: «236.2 18.4» или «236.2 18.4 horizon» (h или 0 тоже)</string>
 </resources>

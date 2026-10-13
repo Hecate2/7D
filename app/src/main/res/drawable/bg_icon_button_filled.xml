@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 实心圆形底：给两枚「新建」键用，标题栏右上角那枚和空列表正中那枚。
+     其余四个键（语言/常亮/导出/导入）都是描边圆，这两枚填成白底、加号转黑，
+     让唯一的「写数据」动作在一排只读入口里先被看见。 -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <solid android:color="@color/paper" />
+</shape>

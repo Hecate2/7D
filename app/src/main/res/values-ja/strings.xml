@@ -6,9 +6,7 @@
     <!-- 撮影セット -->
     <string name="groups_title">撮影セット</string>
     <string name="groups_keep_on">画面を常時点灯</string>
-    <string name="groups_new">+ 新規</string>
-    <string name="groups_subtitle">窓ごとに1セット · この端末に保存</string>
-    <string name="groups_empty">まだセットがありません\n「+ 新規」で名前を付け\n測りたい窓の前に立ってください</string>
+    <string name="groups_empty">セットがまだありません。+ で開始</string>
     <string name="groups_export_data">データを書き出す</string>
     <string name="groups_import_data">データを読み込む</string>
 
@@ -36,9 +34,9 @@
     <string name="gps_locating">測位中…</string>
     <string name="gps_done">測位 %1$s</string>
     <string name="gps_done_accuracy">測位 %1$s · ±%2$d m</string>
-    <string name="gps_failed">測位できません：屋外で試すか座標を手入力</string>
-    <string name="hemisphere_north">北緯：南を向いて、右（西）から左（東）へ</string>
-    <string name="hemisphere_south">南緯：北を向いて、右（東）から左（西）へ</string>
+    <string name="gps_failed">測位できません。座標を手入力してください</string>
+    <string name="hemisphere_north">北緯：南を向いて、西から東へ</string>
+    <string name="hemisphere_south">南緯：北を向いて、東から西へ</string>
     <string name="hemisphere_tropic">赤道付近：太陽が南北、逆になる。両側を撮る</string>
     <string name="hemisphere_unknown">緯度を入力すると撮り方の目安が出ます</string>
     <string name="invalid_latlon">緯度（−90..90）と経度（−180..180）を正しく入力</string>
@@ -51,7 +49,7 @@
     <string name="menu_delete">削除</string>
     <string name="menu_export">書き出し</string>
     <string name="delete_group_title">撮影セットを削除</string>
-    <string name="delete_group_message">「%1$s」の角度とデータを削除します。</string>
+    <string name="delete_group_message">「%1$s」のデータをすべて削除します。</string>
     <string name="delete_group_with_photos">写真 %1$d 枚も削除（取り消せません）</string>
     <string name="delete_group_photos_failed">写真 %1$d 枚を削除できませんでした</string>
 
@@ -85,8 +83,8 @@
     <string name="capture_focus">フォーカス</string>
     <string name="capture_camera_needed">撮影にはカメラの許可が必要です\nタップして許可</string>
     <string name="capture_camera_failed">カメラを起動できません。角度の記録はできます</string>
-    <string name="capture_sensor_missing">姿勢センサーがありません。仰角・方位が取れません</string>
-    <string name="capture_no_pose">センサーの値を待っています</string>
+    <string name="capture_sensor_missing">姿勢センサーがありません</string>
+    <string name="capture_no_pose">センサーの値を取得中</string>
     <string name="capture_ceiling_longpress">天井はタップのみ</string>
     <string name="capture_photo_failed">写真は保存できませんでしたが、角度は記録しました</string>
     <string name="capture_deleted">%1$d 点目を削除</string>
@@ -97,7 +95,7 @@
     <string name="capture_calib_high">良</string>
     <string name="capture_calib_mid">中</string>
     <string name="capture_calib_low">不良 · 8の字</string>
-    <string name="capture_below_horizon">仰角が0度を下回っています\n地平線までレンズを上げてください</string>
+    <string name="capture_below_horizon">仰角が 0° 未満です\nレンズを上げてください</string>
     <string name="capture_jitter_label">測定</string>
     <string name="capture_jitter_unknown">?</string>
     <string name="capture_jitter_high">良</string>
@@ -127,7 +125,7 @@
     <string name="result_mode_external">外部のみ</string>
     <string name="result_mode_both">外部＋天井</string>
     <string name="result_mode_ceiling">天井のみ</string>
-    <string name="result_mode_ceiling_locked">天井を撮るとこの2つが使えます</string>
+    <string name="result_mode_ceiling_locked">先に天井を撮ってください</string>
     <string name="result_mode_ceiling_empty">天井が空なので「外部のみ」に戻しました</string>
     <string name="result_main_label">%1$s 直射日光 · %2$s</string>
     <string name="result_computing">計算中…</string>
@@ -158,7 +156,7 @@
     <string name="result_export_image">画像書き出し</string>
     <string name="result_go_capture">撮影に戻る</string>
     <string name="result_export_done">%1$s に保存しました</string>
-    <string name="result_export_failed">書き出し失敗：空き容量や権限を確認</string>
+    <string name="result_export_failed">書き出し失敗：空き容量を確認</string>
     <string name="result_export_busy">書き出し中です。少々お待ち</string>
     <string name="result_no_data">まず撮影してください</string>
     <string name="result_coverage_toofew">点が少なめ · 結果はやや楽観的です</string>
@@ -195,11 +193,11 @@
 
     <!-- 存档导出/导入：走系统文件选择器，落点由用户当场决定，所以文案里不写具体目录 -->
     <string name="export_store_file_name">D7-写真セット-%1$s.json</string>
-    <string name="export_store_empty">書き出せるセットがまだありません</string>
+    <string name="export_store_empty">書き出せるセットがありません</string>
     <string name="export_store_done">%1$d 件のセットを書き出しました</string>
     <string name="export_store_failed">書き出し失敗：選んだ場所に書けません</string>
     <string name="import_store_title">データの読み込み</string>
-    <string name="import_store_message">このファイルには %1$d 件のセットがあります。読み込むと現在の %2$d 件と入れ替わり、元に戻せません。\n\nファイルに入っているのは角度と座標だけで、写真そのものは入っていません。写真は撮影したスマートフォンのアルバムに残ります。読み込んだセットに写真は付かないため、各点のサムネイルは空欄になります。</string>
+    <string name="import_store_message">このファイルには %1$d 件のセットがあります。読み込むと現在の %2$d 件と入れ替わり、元に戻せません。\n\n入っているのは角度と座標だけで、写真はありません。</string>
     <string name="import_store_failed">有効な D7 のファイルではありません</string>
     <string name="import_store_done">%1$d 件のセットを読み込みました</string>
     <string name="export_csv_title">D7 日照データ</string>
@@ -232,7 +230,7 @@
     <string name="export_png_gap_note">（すべて空白点から）</string>
     <string name="export_png_winter">冬至（最も低い日）直射 %1$s</string>
     <string name="export_png_gb">大寒 8–16 の有効直射 %1$s</string>
-    <string name="export_png_footer">七日 D7 · 端末内で計算 · 方位 2–4°、仰角 1° 程度の誤差 · 参考用で、正式の日照調査報告の代わりにはなりません</string>
+    <string name="export_png_footer">七日 D7 · 端末内で計算 · 方位 2–4°、仰角 1° 程度の誤差 · 参考用、正式な報告の代わりにはなりません</string>
 
     <!-- 点の編集 -->
     <string name="edit">編集</string>
@@ -245,9 +243,9 @@
     <string name="bulk_edit_el_offset">仰角のずらし</string>
     <string name="bulk_edit_apply_offset">ずらしを適用</string>
     <string name="bulk_edit_offset_invalid">ずらしは数値で入力（例：-2、1.5）</string>
-    <string name="bulk_edit_hint">1行に1点：「方位角 仰角」。horizon（h、0 でも同じ）は前の行と地平線経由でつなぎます（1行目は不可）。写真は角度で引き継ぎ、合わなければ順引き。追加した行には写真がありません。空にするとその区分の点がすべて消えます。</string>
-    <string name="bulk_edit_first_horizon">1行目には前の行がないので horizon は指定できません</string>
+    <string name="bulk_edit_hint">1行に1点「方位角 仰角」。3語目に horizon（h、0）を書くと前の行と地平線経由でつながります。1行目は不可。空にするとその区分の点は全部消えます。</string>
+    <string name="bulk_edit_first_horizon">1行目には前の行がないので horizon は使えません</string>
     <string name="bulk_edit_clear_title">分区を空にする</string>
-    <string name="bulk_edit_clear_message">%1$d つの区分の点をすべて削除しますか？\n写真はギャラリーに残りますが、角度は復元できません。</string>
-    <string name="bulk_edit_parse_error">%1$d 行目が読めません。「236.2 18.4」または「236.2 18.4 horizon」</string>
+    <string name="bulk_edit_clear_message">%1$d つの区分の点をすべて削除しますか？\n写真はギャラリーに残りますが、角度は戻せません。</string>
+    <string name="bulk_edit_parse_error">%1$d 行目は「236.2 18.4」または「236.2 18.4 horizon」（h、0 も可）</string>
 </resources>

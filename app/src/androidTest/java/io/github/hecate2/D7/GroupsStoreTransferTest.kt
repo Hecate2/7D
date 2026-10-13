@@ -239,4 +239,86 @@ class GroupsStoreTransferTest {
         // 「确认框在不在」，而不是含糊地放过
         onView(withText(R.string.import_store_title)).check(doesNotExist())
     }
+
+    /**
+     * 读不出字节的文件：连确认框都不该出现，数据一个字节不许动。
+     *
+     * 这条盯的不是「读失败有没有提示」，而是**读失败绝不会被当成空存档**。把 null 的读结果
+     * 一路顺着走成 `emptyList()` 是个很自然的写法（`text.orEmpty()` 之类），而那样做的话，
+     * 用户随手选中一个打不开的文件就等于把全部照片组删光。
+     */
+    @Test
+    fun aFileThatCannotBeReadNeverClearsTheData() {
+        repository.createGroup("旧的甲", 31.0, 121.0, 0.0, "Asia/Shanghai")
+        repository.createGroup("旧的乙", 31.1, 121.1, 0.0, "Asia/Shanghai")
+        launchGroups()
+
+        // 指向一个不存在的 provider：openInputStream 抛异常，与「文件被删掉」「权限被收回」
+        // 走的是同一条路径
+        val ghost = Uri.parse("content://io.github.hecate2.D7.nonexistent/ghost.json")
+        stubPicker(Intent.ACTION_OPEN_DOCUMENT, ghost)
+
+        onView(withId(R.id.importStoreButton)).perform(click())
+        intended(hasAction(Intent.ACTION_OPEN_DOCUMENT))
+
+        onView(withText(R.string.import_store_title)).check(doesNotExist())
+        assertEquals(listOf("旧的甲", "旧的乙"), repository.groups.value.map { it.name })
+    }
+
+    /**
+     * 空存档是**合法**的输入，但它意味着「把现在这些全删掉」，所以确认框必须把 0 这个数
+     * 明明白白写出来。这条把现状钉住：一旦哪天有人图省事在空存档上直接返回，或者把确认
+     * 框对空存档跳过去，这里就会红，而不是等用户在某次误点之后才发现数据没了。
+     */
+    @Test
+    fun anEmptyStoreIsDisclosedAsAZeroForNReplacement() {
+        repository.createGroup("旧的甲", 31.0, 121.0, 0.0, "Asia/Shanghai")
+        repository.createGroup("旧的乙", 31.1, 121.1, 0.0, "Asia/Shanghai")
+        launchGroups()
+
+        val source = newTarget("d7-import-nothing.json")
+        write(source, encodeStore(emptyList()))
+        stubPicker(Intent.ACTION_OPEN_DOCUMENT, source)
+
+        onView(withId(R.id.importStoreButton)).perform(click())
+
+        // 关键词是那个 0：用户看到「0 个换掉 2 个」就该收手
+        onView(withText(context.getString(R.string.import_store_message, 0, 2)))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(withText(R.string.confirm)).inRoot(isDialog()).perform(click())
+        TestSupport.waitUntil(5000) { repository.groups.value.isEmpty() }
+    }
+
+    /**
+     * 走完整条链路：导出成一份文件 → 把本机数据清空 → 从那份文件读回来。
+     *
+     * 前面几条都是拿 [encodeStore] 现造一份存档塞给选择器，验的是「导入」这一半；
+     * 这条的两头都是界面上真实发生的事——导出键写出的字节、导入键读回的字节同一个文件，
+     * 覆盖不到的是只有用户点哪个文件那一步。
+     */
+    @Test
+    fun exportThenWipeThenImportBringsEveryGroupBack() {
+        repository.createGroup("阳台", 31.2304, 121.4737, 0.0, "Asia/Shanghai")
+        repository.createGroup("主卧", 31.2305, 121.4738, 0.0, "Asia/Shanghai")
+        launchGroups()
+
+        val target = newTarget("d7-round-trip.json")
+        stubPicker(Intent.ACTION_CREATE_DOCUMENT, target)
+        onView(withId(R.id.exportStoreButton)).perform(click())
+        TestSupport.waitFor { read(target)?.takeIf { it.contains("阳台") } }
+
+        TestSupport.deleteAllGroups(repository)
+        assertEquals(emptyList<String>(), repository.groups.value.map { it.name })
+
+        stubPicker(Intent.ACTION_OPEN_DOCUMENT, target)
+        onView(withId(R.id.importStoreButton)).perform(click())
+        onView(withText(context.getString(R.string.import_store_message, 2, 0)))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
+        onView(withText(R.string.confirm)).inRoot(isDialog()).perform(click())
+
+        TestSupport.waitUntil(5000) { repository.groups.value.size == 2 }
+        assertEquals(listOf("阳台", "主卧"), repository.groups.value.map { it.name })
+    }
 }

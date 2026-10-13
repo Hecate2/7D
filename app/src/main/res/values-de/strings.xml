@@ -6,9 +6,7 @@
     <!-- Fotostrecken -->
     <string name="groups_title">Fotostrecken</string>
     <string name="groups_keep_on">Bildschirm bleibt an</string>
-    <string name="groups_new">+ Neu</string>
-    <string name="groups_subtitle">Eine Strecke pro Fenster · bleibt auf dem Gerät</string>
-    <string name="groups_empty">Noch keine Strecke\nTippe „+ Neu“ und benenne sie\nStelle dich ans Fenster</string>
+    <string name="groups_empty">Noch keine Strecke. Tippe + zum Start.</string>
     <string name="groups_export_data">Daten sichern</string>
     <string name="groups_import_data">Daten laden</string>
 
@@ -36,9 +34,9 @@
     <string name="gps_locating">Suche…</string>
     <string name="gps_done">Gefunden %1$s</string>
     <string name="gps_done_accuracy">Gefunden %1$s · ±%2$d m</string>
-    <string name="gps_failed">Kein Empfang: im Freien versuchen oder Koordinaten eintippen</string>
-    <string name="hemisphere_north">Nördlich: nach Süden sehen, rechts (W) nach links (O)</string>
-    <string name="hemisphere_south">Südlich: nach Norden sehen, rechts (O) nach links (W)</string>
+    <string name="gps_failed">Kein Empfang. Koordinaten von Hand eintippen.</string>
+    <string name="hemisphere_north">Nördlich: nach Süden, von West nach Ost</string>
+    <string name="hemisphere_south">Südlich: nach Norden, von Ost nach West</string>
     <string name="hemisphere_tropic">Äquator: die Sonne wechselt die Seite, beide Seiten aufnehmen</string>
     <string name="hemisphere_unknown">Breite eingeben für Aufnahme-Hinweise</string>
     <string name="invalid_latlon">Breite (−90..90) und Länge (−180..180) prüfen</string>
@@ -51,7 +49,7 @@
     <string name="menu_delete">Löschen</string>
     <string name="menu_export">Export</string>
     <string name="delete_group_title">Fotostrecke löschen</string>
-    <string name="delete_group_message">Winkel und Gruppendaten von „%1$s“ löschen.</string>
+    <string name="delete_group_message">Alle Daten von „%1$s“ löschen.</string>
     <string name="delete_group_with_photos">Auch %1$d Fotos löschen (nicht rückgängig)</string>
     <string name="delete_group_photos_failed">%1$d Fotos nicht löschbar</string>
 
@@ -85,8 +83,8 @@
     <string name="capture_focus">Fokus</string>
     <string name="capture_camera_needed">Kamerarechte nötig\nTippen zum Erlauben</string>
     <string name="capture_camera_failed">Kamera gestartet nicht; Winkel lassen sich trotzdem speichern</string>
-    <string name="capture_sensor_missing">Kein Lagesensor; Höhe und Azimut nicht verfügbar</string>
-    <string name="capture_no_pose">Warte auf Sensorwert</string>
+    <string name="capture_sensor_missing">Kein Lagesensor vorhanden</string>
+    <string name="capture_no_pose">Sensorwert wird gelesen…</string>
     <string name="capture_ceiling_longpress">An der Decke nur tippen</string>
     <string name="capture_photo_failed">Foto nicht gespeichert; Winkel behalten</string>
     <string name="capture_deleted">Punkt %1$d gelöscht</string>
@@ -97,7 +95,7 @@
     <string name="capture_calib_high">gut</string>
     <string name="capture_calib_mid">mittel</string>
     <string name="capture_calib_low">schlecht · 8er</string>
-    <string name="capture_below_horizon">Höhe unter 0°\nObjektiv über den Horizont heben</string>
+    <string name="capture_below_horizon">Höhe unter 0°\nObjektiv anheben</string>
     <string name="capture_jitter_label">Messwert</string>
     <string name="capture_jitter_unknown">?</string>
     <string name="capture_jitter_high">gut</string>
@@ -127,7 +125,7 @@
     <string name="result_mode_external">Nur außen</string>
     <string name="result_mode_both">Außen + Decke</string>
     <string name="result_mode_ceiling">Nur Decke</string>
-    <string name="result_mode_ceiling_locked">Decke aufnehmen, um das freizuschalten</string>
+    <string name="result_mode_ceiling_locked">Erst die Decke aufnehmen</string>
     <string name="result_mode_ceiling_empty">Decke geleert; zurück auf „Nur außen“</string>
     <string name="result_main_label">%1$s Direktsonne · %2$s</string>
     <string name="result_computing">Rechne…</string>
@@ -153,21 +151,21 @@
     <string name="result_delete">Lö</string>
     <string name="result_photo_view">Aufnahme</string>
     <string name="result_photo_close_hint">Zum Schließen tippen</string>
-    <string name="result_photo_missing">Foto ist nicht mehr in der Galerie</string>
+    <string name="result_photo_missing">Foto nicht mehr in der Galerie</string>
     <string name="result_export_csv">CSV</string>
     <string name="result_export_image">Bild</string>
     <string name="result_go_capture">Weiter aufnehmen</string>
     <string name="result_export_done">Gesichert unter %1$s</string>
-    <string name="result_export_failed">Export fehlgeschlagen: Speicher oder Rechte prüfen</string>
+    <string name="result_export_failed">Export fehlgeschlagen: Speicher prüfen</string>
     <string name="result_export_busy">Export läuft, bitte warten</string>
     <string name="result_no_data">Erst aufnehmen</string>
-    <string name="result_coverage_toofew">Zu wenige Punkte; das Ergebnis ist zu optimistisch</string>
-    <string name="result_coverage_low">Nur %1$d%% des Halbkreises; womöglich unvollständig</string>
-    <string name="result_coverage_mid">%1$d%% des Halbkreises; beide Enden nachtragen</string>
+    <string name="result_coverage_toofew">Zu wenige Punkte. Ergebnis zu optimistisch.</string>
+    <string name="result_coverage_low">Nur %1$d%% des Halbkreises</string>
+    <string name="result_coverage_mid">%1$d%% des Halbkreises. Beide Enden nachtragen.</string>
     <string name="result_coverage_ok">%1$d%% des Halbkreises</string>
-    <string name="result_coverage_ceiling_toofew">Zu wenige Deckenpunkte; das Ergebnis ist zu pessimistisch</string>
-    <string name="result_coverage_ceiling_low">Decke nur %1$d%%; womöglich unvollständig</string>
-    <string name="result_coverage_ceiling_mid">Decke %1$d%%; beide Enden nachtragen</string>
+    <string name="result_coverage_ceiling_toofew">Zu wenige Deckenpunkte. Ergebnis zu pessimistisch.</string>
+    <string name="result_coverage_ceiling_low">Decke nur %1$d%%</string>
+    <string name="result_coverage_ceiling_mid">Decke %1$d%%. Beide Enden nachtragen.</string>
 
     <!-- Ergebnis: Datumsnamen / Zeitzone / Jahreskurve -->
     <string name="result_date_winter">Tag der Sonnenwende</string>
@@ -195,11 +193,11 @@
 
     <!-- 存档导出/导入：走系统文件选择器，落点由用户当场决定，所以文案里不写具体目录 -->
     <string name="export_store_file_name">D7-Sets-%1$s.json</string>
-    <string name="export_store_empty">Noch keine Strecken zum Sichern</string>
+    <string name="export_store_empty">Keine Strecken zum Sichern</string>
     <string name="export_store_done">%1$d Strecken gesichert</string>
     <string name="export_store_failed">Export fehlgeschlagen: Zielort nicht beschreibbar</string>
     <string name="import_store_title">Daten laden</string>
-    <string name="import_store_message">Diese Datei enthält %1$d Strecken. Beim Laden werden die aktuellen %2$d ersetzt, das lässt sich nicht rückgängig machen.\n\nDie Datei enthält nur Winkel und Koordinaten, nicht die Fotos selbst. Die bleiben in der Galerie des Telefons, das sie aufgenommen hat. Strecken aus der Datei kommen ohne Fotos, deshalb bleibt das Vorschaubild jedes Punktes leer.</string>
+    <string name="import_store_message">Diese Datei enthält %1$d Strecken. Laden ersetzt die aktuellen %2$d, das lässt sich nicht rückgängig machen.\n\nEnthalten sind nur Winkel und Koordinaten, keine Fotos.</string>
     <string name="import_store_failed">Keine gültige D7-Datei</string>
     <string name="import_store_done">%1$d Strecken geladen</string>
     <string name="export_csv_title">D7-Sonnendaten</string>
@@ -232,7 +230,7 @@
     <string name="export_png_gap_note">(alles aus Lücken)</string>
     <string name="export_png_winter">Sonnenwende (tiefste Sonne) direkt %1$s</string>
     <string name="export_png_gb">Große Kälte 8–16 wirksam direkt %1$s</string>
-    <string name="export_png_footer">Sieben Tage D7 · offline gerechnet · etwa 2–4° Azimut- und 1° Höhenfehler · zur Orientierung, kein offizieller Sonnenscheinbericht</string>
+    <string name="export_png_footer">Sieben Tage D7 · offline gerechnet · etwa 2–4° Azimut- und 1° Höhenfehler · zur Orientierung, kein offizieller Bericht</string>
 
     <!-- Punkbearbeitung -->
     <string name="edit">Bearbeiten</string>
@@ -245,9 +243,9 @@
     <string name="bulk_edit_el_offset">Höhen-Versatz</string>
     <string name="bulk_edit_apply_offset">Versatz anwenden</string>
     <string name="bulk_edit_offset_invalid">Versatz als Zahl, z. B. -2 oder 1.5</string>
-    <string name="bulk_edit_hint">Ein Punkt je Zeile: „Azimut Höhe“, horizon (oder h, 0) verbindet die Zeile über den Horizont mit der vorigen; die erste Zeile nicht. Fotos werden über Winkel zugeordnet, sonst der Reihe nach; neue Zeilen haben kein Foto. Leeren des Textes löscht alle Punkte dieser Zone.</string>
-    <string name="bulk_edit_first_horizon">Zeile 1 hat keinen Vorgänger, kann also nicht über den Horizont laufen</string>
+    <string name="bulk_edit_hint">Ein Punkt je Zeile, „Azimut Höhe“. Ein drittes Wort horizon (oder h, 0) führt die Verbindung über den Horizont zur vorigen Zeile; Zeile 1 nicht. Leerer Text löscht die ganze Zone.</string>
+    <string name="bulk_edit_first_horizon">Zeile 1 hat keinen Vorgänger, kein horizon</string>
     <string name="bulk_edit_clear_title">Zone leeren</string>
-    <string name="bulk_edit_clear_message">Alle Punkte in %1$d Zonen löschen?\nFotos bleiben in der Galerie, diese Winkel sind aber nicht wiederherstellbar.</string>
-    <string name="bulk_edit_parse_error">Zeile %1$d unlesbar; Form: „236.2 18.4“ oder „236.2 18.4 horizon“</string>
+    <string name="bulk_edit_clear_message">Alle Punkte in %1$d Zonen löschen?\nFotos bleiben in der Galerie, die Winkel sind dann weg.</string>
+    <string name="bulk_edit_parse_error">Zeile %1$d: „236.2 18.4“ oder „236.2 18.4 horizon“ (h oder 0 geht auch)</string>
 </resources>

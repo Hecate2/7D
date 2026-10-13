@@ -6,9 +6,7 @@
     <!-- 촬영 세트 -->
     <string name="groups_title">촬영 세트</string>
     <string name="groups_keep_on">화면 항상 켜기</string>
-    <string name="groups_new">+ 새로</string>
-    <string name="groups_subtitle">창문마다 한 세트 · 이 기기에만 저장</string>
-    <string name="groups_empty">아직 세트가 없습니다\n“+ 새로”로 이름을 붙이고\n측정할 창문 앞에 서세요</string>
+    <string name="groups_empty">세트가 없습니다. +로 시작</string>
     <string name="groups_export_data">데이터 내보내기</string>
     <string name="groups_import_data">데이터 가져오기</string>
 
@@ -36,9 +34,9 @@
     <string name="gps_locating">위치 확인 중…</string>
     <string name="gps_done">위치 %1$s</string>
     <string name="gps_done_accuracy">위치 %1$s · ±%2$d m</string>
-    <string name="gps_failed">위치를 못 잡았습니다: 실외에서 다시 시도하거나 좌표를 직접 입력</string>
-    <string name="hemisphere_north">북반구: 남을 보고 오른쪽(서)에서 왼쪽(동)으로</string>
-    <string name="hemisphere_south">남반구: 북을 보고 오른쪽(동)에서 왼쪽(서)으로</string>
+    <string name="gps_failed">위치를 못 잡았습니다. 좌표를 직접 입력하세요</string>
+    <string name="hemisphere_north">북반구: 남을 보고 서에서 동으로</string>
+    <string name="hemisphere_south">남반구: 북을 보고 동에서 서로</string>
     <string name="hemisphere_tropic">적도 부근: 태양이 양쪽으로 옮겨 가므로 둘 다 찍으세요</string>
     <string name="hemisphere_unknown">위도를 넣으면 촬영 팁이 나옵니다</string>
     <string name="invalid_latlon">위도(−90..90)와 경도(−180..180)를 확인하세요</string>
@@ -51,7 +49,7 @@
     <string name="menu_delete">삭제</string>
     <string name="menu_export">내보내기</string>
     <string name="delete_group_title">촬영 세트 삭제</string>
-    <string name="delete_group_message">“%1$s”의 각도와 데이터를 삭제합니다.</string>
+    <string name="delete_group_message">“%1$s”의 데이터를 모두 삭제합니다.</string>
     <string name="delete_group_with_photos">사진 %1$d장도 삭제(되돌릴 수 없음)</string>
     <string name="delete_group_photos_failed">사진 %1$d장을 삭제하지 못했습니다</string>
 
@@ -85,8 +83,8 @@
     <string name="capture_focus">초점</string>
     <string name="capture_camera_needed">촬영에는 카메라 권한이 필요합니다\n눌러서 허용</string>
     <string name="capture_camera_failed">카메라를 열지 못했습니다. 각도는 기록됩니다</string>
-    <string name="capture_sensor_missing">자세 센서가 없어 고도와 방위를 얻을 수 없습니다</string>
-    <string name="capture_no_pose">센서 값을 기다리는 중</string>
+    <string name="capture_sensor_missing">이 기기에는 자세 센서가 없습니다</string>
+    <string name="capture_no_pose">센서 값을 읽는 중</string>
     <string name="capture_ceiling_longpress">천장은 탭만 됩니다</string>
     <string name="capture_photo_failed">사진 저장은 실패했지만 각도는 남겼습니다</string>
     <string name="capture_deleted">%1$d번 점 삭제</string>
@@ -97,7 +95,7 @@
     <string name="capture_calib_high">양호</string>
     <string name="capture_calib_mid">보통</string>
     <string name="capture_calib_low">나쁨 · 8자</string>
-    <string name="capture_below_horizon">고도가 0도 아래입니다\n렌즈를 지평선 위로 올리세요</string>
+    <string name="capture_below_horizon">고도가 0° 아래입니다\n렌즈를 올리세요</string>
     <string name="capture_jitter_label">측정</string>
     <string name="capture_jitter_unknown">?</string>
     <string name="capture_jitter_high">양호</string>
@@ -127,7 +125,7 @@
     <string name="result_mode_external">외부만</string>
     <string name="result_mode_both">외부 + 천장</string>
     <string name="result_mode_ceiling">천장만</string>
-    <string name="result_mode_ceiling_locked">천장을 찍으면 이 두 모드가 열립니다</string>
+    <string name="result_mode_ceiling_locked">먼저 천장을 찍으세요</string>
     <string name="result_mode_ceiling_empty">천장이 비어 “외부만”으로 되돌렸습니다</string>
     <string name="result_main_label">%1$s 직사광 · %2$s</string>
     <string name="result_computing">계산 중…</string>
@@ -158,15 +156,15 @@
     <string name="result_export_image">이미지 내보내기</string>
     <string name="result_go_capture">촬영으로</string>
     <string name="result_export_done">%1$s 에 저장했습니다</string>
-    <string name="result_export_failed">내보내기 실패: 용량과 권한을 확인하세요</string>
+    <string name="result_export_failed">내보내기 실패: 용량을 확인하세요</string>
     <string name="result_export_busy">내보내는 중입니다. 잠시만 기다리세요</string>
     <string name="result_no_data">먼저 촬영하세요</string>
-    <string name="result_coverage_toofew">점이 적음 · 결과가 다들 낙관적입니다</string>
-    <string name="result_coverage_low">반원 %1$d%%만 · 빠졌을 수 있습니다</string>
+    <string name="result_coverage_toofew">점이 적음 · 결과가 다소 낙관적입니다</string>
+    <string name="result_coverage_low">반원 %1$d%%만</string>
     <string name="result_coverage_mid">반원 %1$d%% · 양 끝을 보충하세요</string>
     <string name="result_coverage_ok">반원 %1$d%%</string>
-    <string name="result_coverage_ceiling_toofew">천장 점이 적음 · 결과가 다들 보수적입니다</string>
-    <string name="result_coverage_ceiling_low">천장 %1$d%%만 · 빠졌을 수 있습니다</string>
+    <string name="result_coverage_ceiling_toofew">천장 점이 적음 · 결과가 다소 보수적입니다</string>
+    <string name="result_coverage_ceiling_low">천장 %1$d%%만</string>
     <string name="result_coverage_ceiling_mid">천장 %1$d%% · 양 끝을 보충하세요</string>
 
     <!-- 결과: 날짜 이름 / 시간대 / 연간 곡선 -->
@@ -195,11 +193,11 @@
 
     <!-- 存档导出/导入：走系统文件选择器，落点由用户当场决定，所以文案里不写具体目录 -->
     <string name="export_store_file_name">D7-사진세트-%1$s.json</string>
-    <string name="export_store_empty">내보낼 세트가 아직 없습니다</string>
+    <string name="export_store_empty">내보낼 세트가 없습니다</string>
     <string name="export_store_done">세트 %1$d개를 내보냈습니다</string>
-    <string name="export_store_failed">내보내기 실패: 선택한 위치에 쓸 수 없습니다</string>
+    <string name="export_store_failed">내보내기 실패: 위치에 쓸 수 없습니다</string>
     <string name="import_store_title">데이터 가져오기</string>
-    <string name="import_store_message">이 파일에는 세트가 %1$d개 있습니다. 가져오면 현재 %2$d개와 바뀌고 되돌릴 수 없습니다.\n\n파일에는 각도와 좌표만 들어 있고 사진 자체는 없습니다. 사진은 촬영한 스마트폰의 앨범에 남습니다. 가져온 세트에는 사진이 붙지 않으므로 각 점의 미리보기 칸이 비어 있습니다.</string>
+    <string name="import_store_message">이 파일에는 세트가 %1$d개 있습니다. 가져오면 현재 %2$d개와 바뀌고 되돌릴 수 없습니다.\n\n각도와 좌표만 들어 있고 사진은 없습니다.</string>
     <string name="import_store_failed">올바른 D7 파일이 아닙니다</string>
     <string name="import_store_done">세트 %1$d개를 가져왔습니다</string>
     <string name="export_csv_title">D7 일조 데이터</string>
@@ -232,7 +230,7 @@
     <string name="export_png_gap_note">(전부 빈 구간에서)</string>
     <string name="export_png_winter">동지(가장 낮은 해) 직사광 %1$s</string>
     <string name="export_png_gb">대한 8–16 유효 직사광 %1$s</string>
-    <string name="export_png_footer">칠일 D7 · 기기 안에서 계산 · 방위 2–4°, 고도 약 1° 오차 · 참고용이며 공식 일조 조사 보고서를 대신하지 않습니다</string>
+    <string name="export_png_footer">칠일 D7 · 기기 안에서 계산 · 방위 2–4°, 고도 약 1° 오차 · 참고용이며 공식 보고서를 대신하지 않습니다</string>
 
     <!-- 점 편집 -->
     <string name="edit">편집</string>
@@ -245,9 +243,9 @@
     <string name="bulk_edit_el_offset">고도 이동</string>
     <string name="bulk_edit_apply_offset">이동 적용</string>
     <string name="bulk_edit_offset_invalid">이동값은 숫자여야 합니다(예: -2, 1.5)</string>
-    <string name="bulk_edit_hint">한 줄에 한 점: “방위각 고도”, horizon(또는 h, 0)은 그 줄을 바로 앞 줄과 지평선으로 잇는다는 뜻이며 첫 줄에는 쓸 수 없습니다. 사진은 각도가 같은 것으로 먼저 이어지고, 안 되면 순서대로 잇습니다. 새로 넣은 줄에는 사진이 없습니다. 텍스트를 지우면 그 구역의 점이 모두 사라집니다.</string>
+    <string name="bulk_edit_hint">한 줄에 한 점 “방위각 고도”. 셋째 말로 horizon(또는 h, 0)을 쓰면 앞 줄과 지평선으로 잇습니다. 첫 줄에는 못 씁니다. 비우면 그 구역의 점이 모두 지워집니다.</string>
     <string name="bulk_edit_first_horizon">첫 줄에는 앞 줄이 없어 horizon을 쓸 수 없습니다</string>
     <string name="bulk_edit_clear_title">구역 비우기</string>
-    <string name="bulk_edit_clear_message">%1$d개 구역의 점을 모두 지울까요?\n사진은 갤러리에 남지만 이 각도는 복구할 수 없습니다.</string>
-    <string name="bulk_edit_parse_error">%1$d째 줄을 읽을 수 없습니다: “236.2 18.4” 또는 “236.2 18.4 horizon”</string>
+    <string name="bulk_edit_clear_message">%1$d개 구역의 점을 모두 지울까요?\n사진은 갤러리에 남지만 각도는 되돌릴 수 없습니다.</string>
+    <string name="bulk_edit_parse_error">%1$d째 줄은 “236.2 18.4” 또는 “236.2 18.4 horizon”(h, 0도 가능)</string>
 </resources>

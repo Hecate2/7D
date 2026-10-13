@@ -64,8 +64,7 @@
             android:src="@drawable/ic_keep_on" />
 
         <!-- 存档导出/导入：一对方向相反的托盘图标。走系统文件选择器（SAF），所以不需要任何
-             存储权限，落点由用户当场决定（网盘、下载、外置卡都行），app 不指定去处。
-             窄屏上这一行已经排了四件东西（语言/常亮/新建），这两个键因此用 6dp 间距而非常亮的 8dp。 -->
+             存储权限，落点由用户当场决定（网盘、下载、外置卡都行），app 不指定去处。 -->
         <ImageView
             android:id="@+id/exportStoreButton"
             android:layout_width="34dp"
@@ -92,28 +91,23 @@
             android:scaleType="fitCenter"
             android:src="@drawable/ic_store_in" />
 
-        <TextView
+        <!-- 只留加号，不写「新建」两个字：这一排另外四件都是图标，唯独这一个带文字，
+             挤掉的正是它自己左边那几枚的间距；加号在文件管理器、相册、浏览器里到处都
+             是「新建」，不需要现学。它是唯一会写数据的动作，所以底填成实心白、加号转
+             黑，跟四枚描边圆分开。 -->
+        <ImageView
             android:id="@+id/newButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_pill"
-            android:paddingStart="14dp"
-            android:paddingTop="6dp"
-            android:paddingEnd="14dp"
-            android:paddingBottom="6dp"
-            android:text="@string/groups_new"
-            android:textColor="@color/paper"
-            android:textSize="12sp" />
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:background="@drawable/bg_icon_button_filled"
+            android:clickable="true"
+            android:contentDescription="@string/new_group_title"
+            android:focusable="true"
+            android:padding="7dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_plus"
+            android:tint="@color/ink" />
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/subtitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="@string/groups_subtitle"
-        android:textColor="@color/smoke"
-        android:textSize="12sp" />
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -134,17 +128,39 @@
                 android:paddingBottom="12dp" />
         </ScrollView>
 
-        <TextView
+        <!-- 一个组都没有时的整个主显示区：一枚特大加号 + 一行短说明。
+             加号本身就是按钮，点它和点右上角那颗是同一个动作。首次打开应用的人面对空
+             列表不知道该做什么，右上角那枚 34dp 的图标在整屏空白里太不起眼，这里的
+             目标就是让「从哪儿开始」在整屏里最显眼。 -->
+        <LinearLayout
             android:id="@+id/emptyView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:gravity="center"
-            android:lineSpacingExtra="6dp"
-            android:text="@string/groups_empty"
-            android:textColor="@color/smoke"
-            android:textSize="13sp"
-            android:visibility="gone" />
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/emptyNewButton"
+                android:layout_width="112dp"
+                android:layout_height="112dp"
+                android:background="@drawable/bg_icon_button_filled"
+                android:clickable="true"
+                android:contentDescription="@string/new_group_title"
+                android:focusable="true"
+                android:padding="20dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_plus_large"
+                android:tint="@color/ink" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:text="@string/groups_empty"
+                android:textColor="@color/smoke"
+                android:textSize="13sp" />
+        </LinearLayout>
     </FrameLayout>
 
 </LinearLayout>

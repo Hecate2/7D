@@ -6,9 +6,7 @@
     <!-- Séries de photos -->
     <string name="groups_title">Séries</string>
     <string name="groups_keep_on">Écran toujours allumé</string>
-    <string name="groups_new">+ Nouvelle</string>
-    <string name="groups_subtitle">Une série par fenêtre · reste sur l’appareil</string>
-    <string name="groups_empty">Aucune série\nTouchez « + Nouvelle » et nommez-la\nPlacez-vous à la fenêtre à mesurer</string>
+    <string name="groups_empty">Aucune série. Touchez + pour commencer.</string>
     <string name="groups_export_data">Exporter les données</string>
     <string name="groups_import_data">Importer les données</string>
 
@@ -36,9 +34,9 @@
     <string name="gps_locating">Localisation…</string>
     <string name="gps_done">Position %1$s</string>
     <string name="gps_done_accuracy">Position %1$s · ±%2$d m</string>
-    <string name="gps_failed">Pas de position : essayez en extérieur ou saisissez les coordonnées</string>
-    <string name="hemisphere_north">Nord : face au sud, de droite (O) à gauche (E)</string>
-    <string name="hemisphere_south">Sud : face au nord, de droite (E) à gauche (O)</string>
+    <string name="gps_failed">Pas de position. Saisissez les coordonnées.</string>
+    <string name="hemisphere_north">Nord : face au sud, d’ouest en est</string>
+    <string name="hemisphere_south">Sud : face au nord, d’est en ouest</string>
     <string name="hemisphere_tropic">Équateur : le soleil change de côté, photographiez les deux</string>
     <string name="hemisphere_unknown">Saisissez une latitude pour les conseils</string>
     <string name="invalid_latlon">Latitude (−90..90) et longitude (−180..180) invalides</string>
@@ -51,7 +49,7 @@
     <string name="menu_delete">Supprimer</string>
     <string name="menu_export">Exporter</string>
     <string name="delete_group_title">Supprimer la série</string>
-    <string name="delete_group_message">Supprimer les angles et les données de « %1$s ».</string>
+    <string name="delete_group_message">Supprimer toutes les données de « %1$s ».</string>
     <string name="delete_group_with_photos">Supprimer aussi %1$d photos (irréversible)</string>
     <string name="delete_group_photos_failed">%1$d photos non supprimées</string>
 
@@ -85,8 +83,8 @@
     <string name="capture_focus">Mise au point</string>
     <string name="capture_camera_needed">Autorisation caméra requise\nTouchez pour accorder</string>
     <string name="capture_camera_failed">Caméra indisponible ; les angles restent enregistrables</string>
-    <string name="capture_sensor_missing">Pas de capteur d’orientation ; hauteur et azimut indisponibles</string>
-    <string name="capture_no_pose">En attente d’une mesure</string>
+    <string name="capture_sensor_missing">Pas de capteur d’orientation</string>
+    <string name="capture_no_pose">Lecture de la mesure…</string>
     <string name="capture_ceiling_longpress">Au plafond : clic seulement</string>
     <string name="capture_photo_failed">Photo non enregistrée ; angle conservé</string>
     <string name="capture_deleted">Point %1$d supprimé</string>
@@ -97,7 +95,7 @@
     <string name="capture_calib_high">bonne</string>
     <string name="capture_calib_mid">moyenne</string>
     <string name="capture_calib_low">faible · 8</string>
-    <string name="capture_below_horizon">Hauteur sous 0°\nLevez l’objectif au-dessus de l’horizon</string>
+    <string name="capture_below_horizon">Hauteur sous 0°\nLevez l’objectif</string>
     <string name="capture_jitter_label">Mesure</string>
     <string name="capture_jitter_unknown">?</string>
     <string name="capture_jitter_high">bonne</string>
@@ -127,7 +125,7 @@
     <string name="result_mode_external">Extérieur seul</string>
     <string name="result_mode_both">Extérieur + plafond</string>
     <string name="result_mode_ceiling">Plafond seul</string>
-    <string name="result_mode_ceiling_locked">Photographiez le plafond pour les débloquer</string>
+    <string name="result_mode_ceiling_locked">Photographiez d’abord le plafond</string>
     <string name="result_mode_ceiling_empty">Plafond vidé ; retour à « Extérieur seul »</string>
     <string name="result_main_label">%1$s soleil direct · %2$s</string>
     <string name="result_computing">Calcul…</string>
@@ -153,21 +151,21 @@
     <string name="result_delete">Sup</string>
     <string name="result_photo_view">Photo prise</string>
     <string name="result_photo_close_hint">Toucher pour fermer</string>
-    <string name="result_photo_missing">Photo introuvable dans la galerie</string>
+    <string name="result_photo_missing">Photo absente de la galerie</string>
     <string name="result_export_csv">CSV</string>
     <string name="result_export_image">Image</string>
     <string name="result_go_capture">Reprendre</string>
     <string name="result_export_done">Enregistré dans %1$s</string>
-    <string name="result_export_failed">Échec de l’export : vérifiez l’espace ou les droits</string>
+    <string name="result_export_failed">Échec de l’export : vérifiez l’espace libre</string>
     <string name="result_export_busy">Export en cours, patientez</string>
     <string name="result_no_data">Photographiez d’abord</string>
-    <string name="result_coverage_toofew">Trop peu de points ; résultat probablement trop optimiste</string>
-    <string name="result_coverage_low">Seulement %1$d%% du demi-cercle ; peut-être incomplet</string>
-    <string name="result_coverage_mid">%1$d%% du demi-cercle ; ajoutez les deux bouts</string>
+    <string name="result_coverage_toofew">Trop peu de points. Résultat trop optimiste.</string>
+    <string name="result_coverage_low">Seulement %1$d%% du demi-cercle</string>
+    <string name="result_coverage_mid">%1$d%% du demi-cercle. Ajoutez les deux bouts.</string>
     <string name="result_coverage_ok">%1$d%% du demi-cercle</string>
-    <string name="result_coverage_ceiling_toofew">Trop peu de points au plafond ; résultat probablement trop prudent</string>
-    <string name="result_coverage_ceiling_low">Plafond à %1$d%% seulement ; peut-être incomplet</string>
-    <string name="result_coverage_ceiling_mid">Plafond à %1$d%% ; ajoutez les deux bouts</string>
+    <string name="result_coverage_ceiling_toofew">Trop peu de points au plafond. Résultat trop prudent.</string>
+    <string name="result_coverage_ceiling_low">Plafond à %1$d%% seulement</string>
+    <string name="result_coverage_ceiling_mid">Plafond à %1$d%%. Ajoutez les deux bouts.</string>
 
     <!-- Résultat : dates / fuseau / courbe annuelle -->
     <string name="result_date_winter">Jour du solstice</string>
@@ -197,9 +195,9 @@
     <string name="export_store_file_name">D7-series-%1$s.json</string>
     <string name="export_store_empty">Aucune série à exporter</string>
     <string name="export_store_done">%1$d séries exportées</string>
-    <string name="export_store_failed">Échec de l’export : destination non accessible en écriture</string>
+    <string name="export_store_failed">Échec de l’export : destination en lecture seule</string>
     <string name="import_store_title">Importer les données</string>
-    <string name="import_store_message">Ce fichier contient %1$d séries. L’import remplacera les %2$d actuelles, sans retour possible.\n\nLe fichier ne contient que des angles et des coordonnées, pas les photos : celles-ci restent dans la galerie du téléphone qui les a prises. Les séries importées n’ont aucune photo, la case de la miniature de chaque point reste donc vide.</string>
+    <string name="import_store_message">Ce fichier contient %1$d séries. L’import remplace les %2$d actuelles, sans retour possible.\n\nIl ne contient que des angles et des coordonnées, pas de photos.</string>
     <string name="import_store_failed">Ce fichier n’est pas une sauvegarde D7 valide</string>
     <string name="import_store_done">%1$d séries importées</string>
     <string name="export_csv_title">D7 données d’ensoleillement</string>
@@ -232,7 +230,7 @@
     <string name="export_png_gap_note">(tout vient des trous)</string>
     <string name="export_png_winter">Solstice (soleil le plus bas) direct %1$s</string>
     <string name="export_png_gb">Grand froid 8–16 effectif direct %1$s</string>
-    <string name="export_png_footer">Sept Jours D7 · calcul hors ligne · environ 2–4° d’azimut et 1° de hauteur · indicatif, ne remplace pas une étude d’ensoleillement réglementaire</string>
+    <string name="export_png_footer">Sept Jours D7 · calcul hors ligne · environ 2–4° d’azimut et 1° de hauteur · indicatif, ne remplace pas une étude officielle</string>
 
     <!-- Édition des points -->
     <string name="edit">Éditer</string>
@@ -245,9 +243,9 @@
     <string name="bulk_edit_el_offset">Décalage de hauteur</string>
     <string name="bulk_edit_apply_offset">Appliquer</string>
     <string name="bulk_edit_offset_invalid">Décalage numérique, ex. -2 ou 1.5</string>
-    <string name="bulk_edit_hint">Un point par ligne : « azimut hauteur », horizon (ou h, 0) relie la ligne à la précédente par l’horizon ; impossible sur la première. Les photos suivent les angles, sinon l’ordre ; les lignes ajoutées n’ont pas de photo. Vider le texte supprime tous les points de la zone.</string>
-    <string name="bulk_edit_first_horizon">La ligne 1 n’a pas de précédente, elle ne peut pas être par l’horizon</string>
+    <string name="bulk_edit_hint">Un point par ligne, « azimut hauteur ». Un troisième mot, horizon (ou h, 0), relie la ligne à la précédente par l’horizon ; la ligne 1 non. Vider le texte supprime toute la zone.</string>
+    <string name="bulk_edit_first_horizon">La ligne 1 n’a pas de précédente, pas d’horizon</string>
     <string name="bulk_edit_clear_title">Vider la zone</string>
-    <string name="bulk_edit_clear_message">Supprimer tous les points de %1$d zones ?\nLes photos restent dans la galerie, mais ces angles sont perdus.</string>
-    <string name="bulk_edit_parse_error">Ligne %1$d illisible ; écrire « 236.2 18.4 » ou « 236.2 18.4 horizon »</string>
+    <string name="bulk_edit_clear_message">Supprimer tous les points de %1$d zones ?\nLes photos restent dans la galerie, les angles sont perdus.</string>
+    <string name="bulk_edit_parse_error">Ligne %1$d : « 236.2 18.4 » ou « 236.2 18.4 horizon » (h ou 0 aussi)</string>
 </resources>

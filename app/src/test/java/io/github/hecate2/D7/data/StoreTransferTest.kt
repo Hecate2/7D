@@ -154,6 +154,26 @@ class StoreTransferTest {
         assertEquals(emptyList<GroupRecord>(), decodeStore(encodeStore(emptyList()))?.groups)
     }
 
+    /**
+     * 导入把内存态换掉之后，[GroupRepository.awaitWrites] 返回时字节必须已经在盘上。
+     *
+     * 这条盯的是「成功提示早于落盘」这条路：落盘本来排在异步写队列上，界面提示若不等它，
+     * 用户在提示弹出的瞬间划掉应用，进程一没，这次导入就凭空消失了——下次启动读到的是
+     * 导入之前的旧数据，而界面上明明写着「已导入」。用一个全新的仓库读同一个文件来验证，
+     * 而不是去问内存态（内存态在 replaceAll 的那一刻就已经是新数据了，问它等于没问）。
+     */
+    @Test
+    fun replaceAllIsOnDiskOnceAwaitWritesReturns() {
+        val file = File(temp.root, "groups.json")
+        val repository = GroupRepository(file)
+        repository.createGroup("旧的", 31.0, 121.0, 0.0, "Asia/Shanghai")
+
+        repository.replaceAll(listOf(group(id = "imported", name = "导入的")))
+        repository.awaitWrites()
+
+        assertEquals(listOf("导入的"), GroupRepository(file).groups.value.map { it.name })
+    }
+
     @Test
     fun missingRequiredKeyIsRejected() {
         assertNull(decodeStore(edited(listOf(group()), "\"id\": \"g1\",", "")))

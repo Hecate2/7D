@@ -62,7 +62,7 @@ import kotlin.math.roundToInt
 /**
  * 照片组管理（应用入口）。
  * 卡片列表来自仓库的 StateFlow；点卡片进结果页，长按编辑（组名 / 经纬度 / 时区）、删除或导出；
- * 右上「+ 新建」建组后直接进采集页。
+ * 右上角加号建组后直接进采集页；一个组都没有时，主显示区正中那枚大加号是同一个动作。
  */
 class GroupsActivity : ComponentActivity() {
 
@@ -85,10 +85,19 @@ class GroupsActivity : ComponentActivity() {
     private var exportInFlight = false
 
     /**
-     * 是否有导入在读。与 [exportInFlight] 同一个用意：读是异步的，而选择器已经返回，
-     * 中间这一段没有任何按钮可以置灰，连点两下会弹出两个确认对话框，两份存档各自覆盖一遍。
+     * 是否有整份存档的导出在飞。与 [exportInFlight]（单组 CSV / PNG）不是一回事：
+     * 这里的入口是标题栏那颗托盘键，同样没有按钮可以置灰，两次导出会各弹一次选择器。
      */
-    private var importInFlight = false
+    private var exportStoreInFlight = false
+
+    /**
+     * 是否有整份存档的导入在读。选择器一旦返回，读是异步的，而这一段没有任何按钮可以置灰，
+     * 连点两下会弹出两个确认对话框，两份存档各自覆盖一遍。
+     *
+     * 与 [exportStoreInFlight] 互斥：导入是要把内存态整份换掉、导出是要把内存态整份写出去，
+     * 让它们交错只会得到一份自己也说不清是谁的存档。
+     */
+    private var importStoreInFlight = false
 
     /**
      * 存档导出的落点由用户当场选（SAF），app 不指定目录。这样既不需要任何存储权限，
@@ -96,7 +105,8 @@ class GroupsActivity : ComponentActivity() {
      */
     private val createStoreDoc =
         registerForActivityResult(ActivityResultContracts.CreateDocument(STORE_MIME)) { uri ->
-            if (uri != null) writeStoreTo(uri)
+            // 用户在选择器里取消：没有后续的写，标志在这里就得放掉
+            if (uri == null) exportStoreInFlight = false else writeStoreTo(uri)
         }
 
     /**
@@ -106,7 +116,7 @@ class GroupsActivity : ComponentActivity() {
      */
     private val openStoreDoc =
         registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
-            if (uri == null) importInFlight = false else readStoreFrom(uri)
+            if (uri == null) importStoreInFlight = false else readStoreFrom(uri)
         }
 
     private val locationPermission =
@@ -136,6 +146,7 @@ class GroupsActivity : ComponentActivity() {
 
         repository = GroupRepository.get(this)
         binding.newButton.setOnClickListener { showNewGroupDialog() }
+        binding.emptyNewButton.setOnClickListener { showNewGroupDialog() }
         binding.langButton.setOnClickListener { showLanguageDialog() }
         binding.keepOnButton.setOnClickListener { toggleKeepScreenOn() }
         binding.exportStoreButton.setOnClickListener { startExportStore() }
@@ -342,44 +353,70 @@ class GroupsActivity : ComponentActivity() {
     }
 
     /**
-     * 导出全部存档。空库先挡掉：导出一个空文件出去，用户看不出这算成功还是算没做事。
+     * 导出全部存档。两处先挡掉：空库（导出一个空文件出去，用户看不出这算成功还是算没做事）、
+     * 以及已经有导入在飞（两边换的是同一份内存态）。
      */
     private fun startExportStore() {
+        if (exportStoreInFlight || importStoreInFlight) return
         if (repository.groups.value.isEmpty()) {
             toast(getString(R.string.export_store_empty))
             return
         }
         val stamp = LocalDate.now().toString().replace("-", "")
-        createStoreDoc.launch(getString(R.string.export_store_file_name, stamp))
+        exportStoreInFlight = true
+        // 选择器是系统提供的文档界面，正常设备上必定存在，这一句平时走不到。留着是因为它的
+        // 失败方式特别难查：`launch` 抛异常会直接冒到 onClick 之外，而标志已经置成 true，
+        // 那个键从此永久失灵——点它没有任何反应，也没有任何提示，重启才恢复。
+        runCatching { createStoreDoc.launch(getString(R.string.export_store_file_name, stamp)) }
+            .onFailure {
+                exportStoreInFlight = false
+                toast(getString(R.string.export_store_failed))
+            }
     }
 
     /**
      * 写出的是当前内存态，不去读盘：内存态就是刚发射的那一份，而写队列是异步的，读盘反而
      * 可能撞上还没跑完的那次写入，导出前一版数据。`wt` 是截断模式——用户在系统选择器里
      * 选中一个已存在的文件时，不能把新内容接在旧内容的后面。
+     *
+     * 写失败时留在用户选的那个位置上的可能是一份截断的 JSON。这里不做补救：SAF 没有改名，
+     * 而「先写临时文件再原子改名」那套正是因此用不了的。用户自己的数据不受影响——写的是
+     * 他当场选的那个文件，本机的 groups.json 一个字节都没动。
      */
     private fun writeStoreTo(uri: Uri) {
         val groups = repository.groups.value
         lifecycleScope.launch {
-            val ok = withContext(Dispatchers.IO) {
-                runCatching {
-                    contentResolver.openOutputStream(uri, "wt")?.use { sink ->
-                        sink.write(encodeStore(groups).toByteArray(Charsets.UTF_8))
-                    } != null
-                }.getOrDefault(false)
-            }
-            if (ok) {
-                toast(getString(R.string.export_store_done, groups.size))
-            } else {
-                toast(getString(R.string.export_store_failed))
+            try {
+                val ok = withContext(Dispatchers.IO) {
+                    runCatching {
+                        contentResolver.openOutputStream(uri, "wt")?.use { sink ->
+                            sink.write(encodeStore(groups).toByteArray(Charsets.UTF_8))
+                        } != null
+                    }.getOrDefault(false)
+                }
+                if (ok) {
+                    toast(getString(R.string.export_store_done, groups.size))
+                } else {
+                    toast(getString(R.string.export_store_failed))
+                }
+            } finally {
+                // 协程被生命周期取消时也要放掉，否则回到这个页面就再也导不出去了
+                exportStoreInFlight = false
             }
         }
     }
 
     private fun startImportStore() {
-        if (importInFlight) return
-        importInFlight = true
-        openStoreDoc.launch(STORE_MIME_CANDIDATES)
+        if (importStoreInFlight || exportStoreInFlight) return
+        importStoreInFlight = true
+        // 同 [startExportStore]：拉不起来时要把标志放掉，否则导入这个入口永久失灵。
+        // 文案用的是「这份文件不能导入」那一条，严格说不准确（文件根本还没选），
+        // 取的是「宁可说得粗一点，也不要什么都不说」。
+        runCatching { openStoreDoc.launch(STORE_MIME_CANDIDATES) }
+            .onFailure {
+                importStoreInFlight = false
+                toast(getString(R.string.import_store_failed))
+            }
     }
 
     /** 读进来先整份过一遍校验，通过了才问用户要不要覆盖——不合规的文件连对话框都不必弹。 */
@@ -390,12 +427,15 @@ class GroupsActivity : ComponentActivity() {
                     contentResolver.openInputStream(uri)?.use { readStoreText(it) }
                 }.getOrNull()
             }
-            importInFlight = false
+            importStoreInFlight = false
             val groups = text?.let { decodeStore(it) }?.groups
             if (groups == null) {
                 toast(getString(R.string.import_store_failed))
                 return@launch
             }
+            // 读是异步的，这几毫秒里用户可能已经退出去了。对话框挂在已销毁的窗口上会漏，
+            // 数据也已经没机会被替换，直接不发这一步。
+            if (isFinishing || isDestroyed) return@launch
             confirmImport(groups)
         }
     }
@@ -403,6 +443,10 @@ class GroupsActivity : ComponentActivity() {
     /**
      * 覆盖前的确认。**必须把两边的组数都写出来**：这是不可撤销的一步，用户要知道自己
      * 正在用几组换掉几组，而不是只知道「要导入」。
+     *
+     * 确认之后先等落盘再报成功。落盘本身是异步的，不等的话提示弹出的那一刻字节还在内存里，
+     * 用户此时划掉应用就会让这次导入凭空消失——下次启动看到的是导入前的旧数据，而界面上
+     * 明明写着「已导入」。
      */
     private fun confirmImport(groups: List<GroupRecord>) {
         AlertDialog.Builder(this)
@@ -413,7 +457,10 @@ class GroupsActivity : ComponentActivity() {
             .setNegativeButton(R.string.cancel, null)
             .setPositiveButton(R.string.confirm) { _, _ ->
                 repository.replaceAll(groups)
-                toast(getString(R.string.import_store_done, groups.size))
+                lifecycleScope.launch {
+                    withContext(Dispatchers.IO) { repository.awaitWrites() }
+                    toast(getString(R.string.import_store_done, groups.size))
+                }
             }
             .show()
     }

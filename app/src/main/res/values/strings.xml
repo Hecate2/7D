@@ -6,9 +6,7 @@
     <!-- 照片组管理 -->
     <string name="groups_title">照片组</string>
     <string name="groups_keep_on">屏幕常亮</string>
-    <string name="groups_new">+ 新建</string>
-    <string name="groups_subtitle">一窗一组 · 全部保存在本机</string>
-    <string name="groups_empty">还没有照片组\n点右上角「+ 新建」起个名字\n站在要看的那扇窗前开拍</string>
+    <string name="groups_empty">还没有照片组，点 + 开始</string>
     <string name="groups_export_data">导出数据</string>
     <string name="groups_import_data">导入数据</string>
 
@@ -54,9 +52,9 @@
     <string name="gps_locating">定位中…</string>
     <string name="gps_done">已定位 %1$s</string>
     <string name="gps_done_accuracy">已定位 %1$s · ±%2$d m</string>
-    <string name="gps_failed">定位失败：请到空旷处重试，或手动输入经纬度</string>
-    <string name="hemisphere_north">北纬：面向南侧拍摄，从右（西）拍到左（东）</string>
-    <string name="hemisphere_south">南纬：面向北侧拍摄，从右（东）拍到左（西）</string>
+    <string name="gps_failed">定位失败，请手动输入经纬度</string>
+    <string name="hemisphere_north">北纬：面向南侧，从西向东拍</string>
+    <string name="hemisphere_south">南纬：面向北侧，从东向西拍</string>
     <string name="hemisphere_tropic">赤道附近：夏冬正午太阳分居两侧，建议南北两侧都拍</string>
     <string name="hemisphere_unknown">输入纬度后给出拍摄方向提示</string>
     <string name="invalid_latlon">请输入有效的纬度（-90..90）与经度（-180..180）</string>
@@ -69,7 +67,7 @@
     <string name="menu_delete">删除</string>
     <string name="menu_export">导出</string>
     <string name="delete_group_title">删除照片组</string>
-    <string name="delete_group_message">删除「%1$s」的角度与分组数据。</string>
+    <string name="delete_group_message">删除「%1$s」的全部数据。</string>
     <string name="delete_group_with_photos">同时删除相册中的 %1$d 张照片（不可恢复）</string>
     <string name="delete_group_photos_failed">有 %1$d 张照片未能删除</string>
 
@@ -103,8 +101,8 @@
     <string name="capture_focus">对焦</string>
     <string name="capture_camera_needed">需要相机权限才能取景拍摄\n点此授权</string>
     <string name="capture_camera_failed">相机启动失败，仍可记录角度</string>
-    <string name="capture_sensor_missing">本机缺少姿态传感器，无法采集仰角与方位</string>
-    <string name="capture_no_pose">尚未取得姿态读数，请稍候</string>
+    <string name="capture_sensor_missing">本机缺少姿态传感器</string>
+    <string name="capture_no_pose">正在获取姿态读数</string>
     <string name="capture_ceiling_longpress">天花板区只支持短按连线</string>
     <string name="capture_photo_failed">照片保存失败，已仅记录角度</string>
     <string name="capture_deleted">已删除第 %1$d 点</string>
@@ -115,7 +113,7 @@
     <string name="capture_calib_high">高</string>
     <string name="capture_calib_mid">中</string>
     <string name="capture_calib_low">低 · 画8字</string>
-    <string name="capture_below_horizon">仰角低于0度\n把镜头抬到地平线以上</string>
+    <string name="capture_below_horizon">仰角低于 0°\n把镜头抬到地平线以上</string>
     <string name="capture_jitter_label">读数精度</string>
     <string name="capture_jitter_unknown">未知</string>
     <string name="capture_jitter_high">高</string>
@@ -145,7 +143,7 @@
     <string name="result_mode_external">仅外部</string>
     <string name="result_mode_both">外部+天花板</string>
     <string name="result_mode_ceiling">仅天花板</string>
-    <string name="result_mode_ceiling_locked">先拍天花板才能用这两档</string>
+    <string name="result_mode_ceiling_locked">先拍天花板</string>
     <string name="result_mode_ceiling_empty">天花板区已删空，已切回「仅外部」</string>
     <string name="result_main_label">%1$s 直射日照 · %2$s</string>
     <string name="result_computing">计算中…</string>
@@ -179,16 +177,16 @@
     <string name="result_export_image">导出图片</string>
     <string name="result_go_capture">回采集续拍</string>
     <string name="result_export_done">已保存到 %1$s</string>
-    <string name="result_export_failed">导出失败：请检查存储空间或权限</string>
+    <string name="result_export_failed">导出失败：请检查存储空间</string>
     <string name="result_export_busy">正在导出，请等上一份完成</string>
     <string name="result_no_data">先拍摄再导出</string>
-    <string name="result_coverage_toofew">拍摄点太少，结果多半偏乐观</string>
-    <string name="result_coverage_low">只拍到半球 %1$d%%，可能没拍全</string>
-    <string name="result_coverage_mid">半球覆盖 %1$d%%，建议补拍两端</string>
+    <string name="result_coverage_toofew">拍摄点太少，结果偏乐观</string>
+    <string name="result_coverage_low">半球只拍到 %1$d%%</string>
+    <string name="result_coverage_mid">半球覆盖 %1$d%%，补拍两端</string>
     <string name="result_coverage_ok">半球覆盖 %1$d%%</string>
-    <string name="result_coverage_ceiling_toofew">天花板区拍摄点太少，结果多半偏保守</string>
-    <string name="result_coverage_ceiling_low">天花板半球只拍到 %1$d%%，可能没拍全</string>
-    <string name="result_coverage_ceiling_mid">天花板半球覆盖 %1$d%%，建议补拍两端</string>
+    <string name="result_coverage_ceiling_toofew">天花板点太少，结果偏保守</string>
+    <string name="result_coverage_ceiling_low">天花板半球只拍到 %1$d%%</string>
+    <string name="result_coverage_ceiling_mid">天花板半球覆盖 %1$d%%，补拍两端</string>
 
     <!-- 结果页：日期档位名 / 时区 / 年曲线 -->
     <string name="result_date_winter">冬至日</string>
@@ -216,11 +214,11 @@
 
     <!-- 存档导出/导入：走系统文件选择器，落点由用户当场决定，所以文案里不写具体目录 -->
     <string name="export_store_file_name">七日-照片组存档-%1$s.json</string>
-    <string name="export_store_empty">还没有照片组，没有可导出的数据</string>
+    <string name="export_store_empty">还没有照片组可导出</string>
     <string name="export_store_done">已导出 %1$d 个照片组</string>
-    <string name="export_store_failed">导出失败：请检查所选位置是否可写</string>
+    <string name="export_store_failed">导出失败：所选位置不可写</string>
     <string name="import_store_title">导入存档</string>
-    <string name="import_store_message">这份存档有 %1$d 个照片组，导入后会替换当前的 %2$d 个照片组，当前数据将丢失且不能撤销。\n\n存档里只有角度与坐标，不含照片本身，照片留在拍它的那台手机的相册里；导入后的组不带照片，点列里缩略图那一格是空的。</string>
+    <string name="import_store_message">这份存档有 %1$d 个照片组，导入会替换当前的 %2$d 个，不能撤销。\n\n存档里只有角度与坐标，没有照片。</string>
     <string name="import_store_failed">这份文件不是有效的七日存档</string>
     <string name="import_store_done">已导入 %1$d 个照片组</string>
 
@@ -255,7 +253,7 @@
     <string name="export_png_gap_note">（全部来自空隙）</string>
     <string name="export_png_winter">冬至日（当地最低）直射 %1$s</string>
     <string name="export_png_gb">大寒日 8–16 时有效直射 %1$s</string>
-    <string name="export_png_footer">七日 D7 · 本地离线计算 · 方位误差约 2–4°、仰角约 1° · 供参考，不替代官方日照分析报告</string>
+    <string name="export_png_footer">七日 D7 · 本地离线计算 · 方位误差约 2–4°、仰角约 1° · 仅供参考，不替代官方日照报告</string>
 
     <!-- 点位编辑（单点 / 批量，强行改角度、允许无图点） -->
     <string name="edit">编辑</string>
@@ -268,9 +266,9 @@
     <string name="bulk_edit_el_offset">仰角偏移</string>
     <string name="bulk_edit_apply_offset">应用偏移</string>
     <string name="bulk_edit_offset_invalid">偏移量需为数字，例如 -2 或 1.5</string>
-    <string name="bulk_edit_hint">每行一个点：「方位角 仰角」，第三词写 horizon（或 h、0）表示该行与上一行（右边相邻点）之间经地平线，首行不能标。照片优先按角度对应继承，对不上且行数不变时按序继承；增删行则为无图点。清空文本会删光该区点列。</string>
+    <string name="bulk_edit_hint">每行一个点「方位角 仰角」。第三词写 horizon（或 h、0）表示该行与上一行之间经地平线，首行不能标。清空文本会删光该区点列。</string>
     <string name="bulk_edit_first_horizon">第 1 行没有上一行，不能标 horizon</string>
     <string name="bulk_edit_clear_title">清空分区</string>
-    <string name="bulk_edit_clear_message">确认清空 %1$d 个分区的全部拍摄点？\n照片会留在相册里，但这些分区的角度数据无法恢复。</string>
-    <string name="bulk_edit_parse_error">第 %1$d 行无法解析，应形如「236.2 18.4」或「236.2 18.4 horizon」（h 或 0 同义）</string>
+    <string name="bulk_edit_clear_message">确认清空 %1$d 个分区的全部拍摄点？\n照片留在相册里，角度数据无法恢复。</string>
+    <string name="bulk_edit_parse_error">第 %1$d 行应写成「236.2 18.4」或「236.2 18.4 horizon」（h 或 0 同义）</string>
 </resources>
