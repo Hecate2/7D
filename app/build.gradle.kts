@@ -89,6 +89,11 @@ android {
             // 不读这些文件；会读它们的只有 kotlin-reflect 与 kotlinx-metadata 这类工具。
             "**/*.kotlin_builtins",
             "**/*.kotlin_metadata",
+            // 31 个 META-INF/<库>.version，每个只有几个字节的内容，却各自带一条本地文件头
+            // 与一条中央目录记录（合计 5,774 字节，占 release 包 0.9%）。它们是 AGP 为每个
+            // AndroidX 依赖落下的版本戳，供构建期工具比对依赖版本；release dex 里连
+            // "META-INF" 这个字符串都没有，运行时无人枚举它。
+            "META-INF/*.version",
         )
         // camera-core 的 AAR 自带 libimage_processing_util_jni.so（arm64 4.8 KB + v7a 3.4 KB = 8.3 KB，占 APK 1.4%）。
         // 它只服务 YUV/bitmap 互转与 OpenGL 渲染，D7 只有 Preview + ImageCapture 两条用例，
