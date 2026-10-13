@@ -173,32 +173,42 @@ DayClock 把采样严格定义在钟表分钟上，而不是「本地 0 时 + �
 
 工程使用 Gradle Wrapper 固定版本，不依赖本机 Gradle。版本矩阵：JDK 17（Temurin）、Gradle 8.11.1、Android Gradle Plugin 8.7.3、Kotlin 2.0.21（含 kotlinx.serialization 插件）、compileSdk 35、targetSdk 35、minSdk 26。依赖：androidx core-ktx / activity-ktx / lifecycle-runtime-ktx、CameraX 1.4.x（core、camera2、lifecycle、view；camera-view 上 exclude 掉 appCompat，它对该库零引用）、kotlinx-serialization-json、androidx exifinterface、coroutines（不引入 Material 库）；测试为 `:core` 的 JUnit4 单测，以及 `:app` 的仪器测试（Espresso、espresso-intents、runner、rules、ext-junit、uiautomator）。release 构建开启 R8 缩减（`isMinifyEnabled`/`isShrinkResources`），只保留 zh/en/ja/ko/de/fr/es/ru 八种语言资源、裁剪 x86/x86_64 ABI、图标转 WebP 以压缩体积。
 
-**APK 体积预算（0.1.3，R8 产物 602,258 字节）。** 逐项实测（下表为条目未压缩体积）：
+**APK 体积预算（0.1.4，R8 产物 618,320 字节）。** 逐项实测：
 
-| 项 | 字节 | 说明 |
-| --- | --- | --- |
-| `classes.dex` | 880,284 | 压缩后约占 48%，APK 的大头 |
-| `resources.arsc` | 106,308 | 存根不压缩；八种语言的字符串池占大头 |
-| `res/` | 71,144 | 11 个布局 41.3 KB + 23 个 drawable 16.3 KB + 启动器图标 10.9 KB + `xml/locales_config.xml` 1.0 KB |
-| `AndroidManifest.xml` | 7,388 | |
-| `lib/` | 8,272 | arm64 4.8 KB + v7a 3.4 KB，均为 `libsurface_util_jni.so` |
-| `assets/` | 487 | baseline profile，启动加速用 |
+| 项 | 条目 | 未压缩 | 压缩后 | 说明 |
+| --- | --- | --- | --- | --- |
+| `classes.dex` | 1 | 890,452 | 427,448 | 占磁盘字节的 69%，APK 的大头 |
+| `resources.arsc` | 1 | 108,764 | 108,764 | 原样存放不压缩；字符串池 50,240 占它 46% |
+| `res/` | 45 | 76,712 | 31,416 | 11 个布局 + 28 个 drawable + 3 份 xml + 启动图标 10,268（这张也是原样存放） |
+| `AndroidManifest.xml` | 1 | 7,524 | 2,093 | |
+| `lib/` | 2 | 8,272 | 8,272 | arm64 4,832 + v7a 3,440，都是 `libsurface_util_jni.so`，原样存放 |
+| `assets/` | 2 | 439 | 439 | baseline profile，启动加速用 |
+| `META-INF/` | 5 | 331 | 312 | |
+| 合计 | 57 | 1,092,494 | 578,744 | |
 
-已做的三项减法，各有实测数字与代价说明：
+磁盘 618,320 与「压缩后」那一栏差 39,576，由三笔构成：两条 `.so` 的 16 KB 页对齐填充 25,422（arm64 13,931 + v7a 11,484，其余条目的 4 字节对齐需求都塞得进本来就有的余量）、57 条本地文件头与 57 条中央目录记录、签名块。**比总量只认磁盘字节这一个口径，比某一段的改动才用未压缩那一栏，两者混着算必错。**
+
+已做的四项减法，各有实测数字与代价说明：
 
 - **`packaging.resources.excludes` 剔除 `**/*.kotlin_builtins` 与 `**/*.kotlin_metadata`**（7 个文件共 29,945 字节，占 trim 前包 4.8%）。它们是 Kotlin 编译器与 kotlin-reflect 读的类库元数据；本工程没有 kotlin-reflect 依赖，也不做任何运行时反射（`kotlin.reflect`、`KClass.members`、`typeOf` 均未出现），kotlinx.serialization 的序列化器是编译期生成的代码、不读这些文件。613,873 → 602,318 字节。这 7 个文件是 deflate 存放的，压缩后合计只剩 10,468 字节，所以 APK 减幅（11,555）不到它们未压缩体积的一半。**逐条比就看未压缩，看总量就看压缩后，两个口径不能混着比。**
 - **`jniLibs.excludes` 剔除 camera-core 的 `libimage_processing_util_jni.so`**（arm64 29,008 + v7a 20,380 = 49,388 字节）。它只服务 YUV/bitmap 互转与 OpenGL 渲染，D7 只有 Preview + ImageCapture 两条用例，走不到这些 native 方法；`ImageProcessingUtil` 类本身保留（R8 按 native 方法名 keep），缺的只是库文件。实测 APK 600,281 → 534,541 字节（−11%）。注意减幅比 49,388 字节还多出约 16 KB：这两个 `.so` 与 `lib/` 里留下的 `libsurface_util_jni.so` 一样是原样存放、按页对齐的，剔除它们时各自的页对齐填充也跟着消失。拆开看是条目数据 −49,405、对齐填充 −15,999、尾部 −184。
 - **`resourceConfigurations` 限定八种语言**，把 AndroidX 自带的上百种翻译挡在包外。代价：多六种语言（相对只留 zh+en）实测 63,680 字节，占包的 10.6%——这是为界面多语言功能付的费用，属于产品取舍，不是冗余。这个数字随着译文增减而变化：`result_gb_hint` 在七种语言里清空之后它降过一次，这一版又把九条 `gps_cap_*` 与三条时区相关文案从七种非中文语言里删掉，累计从 66,852 降到 63,680。
+- **`packaging.resources.excludes` 剔除 `META-INF/*.version`**（31 个文件，合计 5,774 字节，占包 0.9%）。它们是 AGP 给每个 AndroidX 依赖落下的版本戳，内容只有几个字节，却各自带一条本地文件头加一条中央目录记录，所以付出与收益完全不成比例。读过 release dex，连 `META-INF` 这个字符串都没有，运行时没人枚举它们。剔完 META-INF 只剩 5 条（构建元数据、版本控制信息、两条 `services/` 与一条 `versions/9/OSGI-INF/MANIFEST.MF`），压缩后 312 字节。
+
+**0.1.4 这一版在语言上省回来的字。** 字符串池从 55,648 降到 50,240（−5,408），`resources.arsc` 从 114,400 降到 108,764（−5,636），池内条目从 1,589 降到 1,576。做法不是砍功能，是把八种语言里啰嗦的说法改短（25 条），再删掉两条纯装饰的文案（`groups_new`「+ 新建」与 `groups_subtitle`「一窗一组 · 全部保存在本机」）。挑几条前后对照：中文的定位失败提示从两句并成一句，`result_coverage_toofew` 从「拍摄点太少，覆盖率仅供参考」改成「拍摄点太少，结果偏乐观」，导入确认框把「存档里只有角度与坐标，没有照片」压成同样的意思但少一半字。**注意这一步的收益上限很低**：`resources.arsc` 里 44,452 字节的文本才净减到 39,146，而池本身只占 arsc 的 46%，所以再怎么精简语言，能动的也就这 5 KB 上下。真要再省一个数量级只能砍语言数量，那是产品决策不是优化。
 
 **验证过但决定不做的精简**（写在这里是为了下一个人别再试一遍）：
 
+- **`jniLibs.useLegacyPackaging = true`，把 `.so` 压缩存放**。这是量到过的第二大单项：实测 618,320 → 587,916 字节，**值 30,404，占包 4.9%**。别被这个数骗了，它里面只有 4,989 是 deflate 挣的（两条 `.so` 从原样存放 8,272 变成压缩后 3,283），剩下的 25,415 是页对齐填充消失——因为 `.so` 一被压缩就不再是「按页对齐的未压缩条目」，那 25,422 字节的填充自然跟着没了。也就是说未压缩口径下 `lib/` 才 8,272 字节，却连带 25,422 字节的填充，**这一项省的大头是填充而不是压缩率**。不做的理由分三处：它把 `.so` 从「装载器直接把 APK 里的那一页映射进地址空间」改成「安装时解压一份到 `/data/app/.../lib/<abi>/`」，每台机器多占 8,272 字节且安装多一次解压，`extractNativeLibs=true` 又是 Android 6 时代的行为，官方从 targetSdk 30 起引导不要这么做；两条 `.so` 的 ELF `p_align` 本来就是 `0x4000`，按页对齐存放是它们的自然状态，压起来等于白丢一层性质。顺带一提，`AndroidManifest.xml` 在这一开一关里字节数完全没变（都是未压缩 7,524），所以别指望从 manifest 上看出这个开关。**要复现就把它打开重打一次，618,320 与 587,916 两个数都记在这儿了。**
+- **只留 `arm64-v8a`，去掉 `armeabi-v7a`**。实测 618,320 → 603,244，**值 15,076，占包 2.4%**。这 15,076 里只有 3,440 是 `.so` 本身，11,484 同样是页对齐填充，剩下是它的本地头与中央目录记录。32 位库在 2026 年只服务老设备，但那批设备恰恰最可能是「看房时随手拿的那台备用机」，为一个能用而不能装的集合省 2.4% 不值。**别忘了同时改 `ndk.abiFilters` 与依赖的 `abiFilters`，两处只改一处会静默地把包做成单 ABI。**
+- **重压启动图标 `mipmap-xxxhdpi/ic_launcher_foreground.webp`（10,268 字节）**。用 `cwebp -q N -m 6 -metadata none` 重打一遍，q95 只降到 10,216，之后掉得很快：q90 → 8,048（−2,220）、q85 → 6,702（−3,566）、q80 → 5,910（−4,358）。它是 432×432、带径向光晕与玻璃渐变的照片级位图，q80 上光晕已经开始出现色带与块状伪影，而收益不到包的 0.8%。要省这个量级得换成矢量（见下一条），那是画质换体积，同样不做。
 - **exclude 掉 `androidx.camera:camera-video`**。它经 camera-core / camera-camera2 / camera-lifecycle / camera-view 四条 `api` 边进依赖树，是未混淆包里的第三大包（379 个类，占非混淆 dex 的 6.1%），看着最像冗余。但 R8 已经把它删干净了（混淆包里 `androidx/camera/video` 命中数为 0）：实测把四条边全 exclude 后重新构建，APK 只从 602,318 变成 602,147 字节，**省 171 字节**，却要承担 `PreviewView` 触碰 video 类时 `NoClassDefFoundError` 的风险。不值得。
 - **把启动器图标 `mipmap/ic_launcher_foreground.webp`（10,268 字节）改成矢量**。它是带径向光晕与玻璃渐变的照片级位图（VP8 有损，432×432），矢量化必然掉画质，换 8 KB 不值。
 - **用 `org.json` 替掉 kotlinx.serialization**。序列化相关类在混淆包里约 62 个，估算值不了多少字节，而手写 JSON 会实打实地牺牲可维护性。
 - **打开 R8 的 `com.android.tools.r8.retainLambdaInvokes`**（加进 `org.gradle.jvmargs`）。混淆后的 dex 里有 **147 个 `$$ExternalSyntheticLambda` 类、合计 67,284 字节**（占类数据 10%），其中一大半在库里：`androidx.camera.core.processing.DefaultSurfaceProcessor` 独占 6 个，最大的一个 2,299 字节。看着像是「让 R8 别把 lambda 脱糖成类」的正路。实测**没有任何变化**：属性确实到了构建进程（探针任务打印 `PROBE=true`），`minifyReleaseWithR8 --rerun` 重跑之后 dex 仍是 880,284 字节、APK 仍是 602,258 字节，一个字节没少。别再试了。
 - **exclude 掉 `androidx.profileinstaller`**。它是 `androidx.startup` 拖进来的，混淆包里 17 个类、15,328 字节，加上 `assets/dexopt/baseline.prof`（369 字节）与 `.profm`（118 字节）——而那份基线配置小到几乎不含规则（369 字节），也就是说这个库今天实际上什么也没做，估省 7~8 KB。**但要在 manifest 里一并摘掉 `androidx.startup` 的 `InitializationProvider` 初始化项**：那个元数据指向 `androidx.profileinstaller.ProfileInstallReceiver`，留着就是启动时 `ClassNotFoundException` → `IllegalStateException` 的崩溃，1.2% 的体积换一条启动路径不值得。
 
-dex 的实际构成（`apkanalyzer dex packages` 逐类归并到原包名，2026-10-05 实测）：`androidx.camera` 344,083 字节 / 509 类（camera-core 200,316、camera-camera2 112,774、camera-view 27,093、camera-lifecycle 3,900），本工程 88,679 / 129（最大三个类是 `CaptureActivity` 7,782、`ViewfinderOverlayView` 5,641、`ResultActivity` 5,497），`kotlinx.coroutines` 58,576 / 119，`androidx.exifinterface` 36,109 / 8（写 EXIF 标签的字符串表占了大头，没有更省的替代品），`kotlinx.serialization` 27,587 / 54。剩下三项都不是能砍的：相机是本 app 的本体，协程撑着 StateFlow 与生命周期作用域，EXIF 是照片落盘的一环。**资源侧也没有余量**：226 条字符串、11 个布局、23 个 drawable 逐个查过引用，孤儿资源为 0；布局里唯一明显的重复是建组与编辑两个对话框共用的「组名 + 两行经纬度」（未压缩各约 3 KB），用 `<include>` 收成一份能省 res/ 约 2.8 KB 未压缩、1 KB 压缩，代价是视图绑定多一层 `view.fields.lonInput` 的间接，不值得。
+dex 的实际构成（`apkanalyzer dex packages` 逐类归并到原包名，2026-10-05 实测）：`androidx.camera` 344,083 字节 / 509 类（camera-core 200,316、camera-camera2 112,774、camera-view 27,093、camera-lifecycle 3,900），本工程 88,679 / 129（最大三个类是 `CaptureActivity` 7,782、`ViewfinderOverlayView` 5,641、`ResultActivity` 5,497），`kotlinx.coroutines` 58,576 / 119，`androidx.exifinterface` 36,109 / 8（写 EXIF 标签的字符串表占了大头，没有更省的替代品），`kotlinx.serialization` 27,587 / 54。剩下三项都不是能砍的：相机是本 app 的本体，协程撑着 StateFlow 与生命周期作用域，EXIF 是照片落盘的一环。**资源侧也没有余量**：235 条字符串、11 个布局、28 个 drawable 逐个查过引用，孤儿资源为 0；布局里唯一明显的重复是建组与编辑两个对话框共用的「组名 + 两行经纬度」（未压缩各约 3 KB），用 `<include>` 收成一份能省 res/ 约 2.8 KB 未压缩、1 KB 压缩，代价是视图绑定多一层 `view.fields.lonInput` 的间接，不值得。
 
 对照参考：**关掉 R8 的 release 包是 2,903,771 字节**，dex 从 880,284 涨到 7,809,312——R8 砍掉 88.7% 的 dex。需要排查「R8 藏起来的东西」时，可临时把 `isMinifyEnabled`/`isShrinkResources` 置 false 打一份对照包，但交付产物必须始终是 R8 包。
 
@@ -227,9 +237,9 @@ printf 'storeFile=release.jks\nstorePassword=<密码>\nkeyAlias=d7\nkeyPassword=
 
 常用命令：`./gradlew :core:test`（算法单测）、`./gradlew :app:assembleDebug`（调试包）、`./gradlew :app:assembleRelease`（发布包，产物名带版本号）、`./gradlew :app:connectedDebugAndroidTest`（仪器测试，在已连接的模拟器或真机上运行，多设备时用 `ANDROID_SERIAL` 指定；该任务结束会自动卸载应用）。装机若 `installDebug` 遇到 ddmlib 超时，可改用 `adb install -r` 直接安装。
 
-反复调试单个测试类时用 `scripts/run-instrumentation.sh`：它走 `am instrument` 跳过 Gradle 的重新打包与安装，模拟器上全量 64 个用例约 39 秒（最慢一次 58 秒，那次是相机链路把两个按快门的用例拖成了等 20 秒超时）、单个类约 3 秒，而 `connectedAndroidTest` 即使命中缓存也要 35 秒以上（冷构建 57 秒）。可传类名或 `类#方法` 限定范围。脚本内把 `ANDROID_SERIAL` 默认为 `emulator-5554`——本机常同时连着真机，而 `connectedAndroidTest` 会跑遍所有连接设备，正式验收仍应显式指定设备。
+反复调试单个测试类时用 `scripts/run-instrumentation.sh`：它走 `am instrument` 跳过 Gradle 的重新打包与安装，模拟器上全量 111 个用例约 74 秒（最慢一次 58 秒，那次是相机链路把两个按快门的用例拖成了等 20 秒超时）、单个类约 3 秒，而 `connectedAndroidTest` 即使命中缓存也要 35 秒以上（冷构建 57 秒）。可传类名或 `类#方法` 限定范围。脚本内把 `ANDROID_SERIAL` 默认为 `emulator-5554`——本机常同时连着真机，而 `connectedAndroidTest` 会跑遍所有连接设备，正式验收仍应显式指定设备。
 
-仪器测试目前 64 例，分 `full`（模拟器，含多语言）与 `fast`（真机，跳过标了 `@NeedsI18n` 的用例）两种模式；用例数不是稳定值，文档里引用它的地方要跟着改。另有一类偶发失败要认得出来——`CaptureShutterGestureTest` 的长按用例等的是整条拍照链路（`takePicture` → EXIF 回写 → 整张 JPEG 发布到相册）落库，模拟器相机被别的负载拖慢时会等满 20 秒超时，而单独跑这个类稳定通过（约 3 秒）；它与代码改动无关，别据此回滚。
+仪器测试目前 111 例，分 `full`（模拟器，含多语言）与 `fast`（真机，跳过标了 `@NeedsI18n` 的用例）两种模式；用例数不是稳定值，文档里引用它的地方要跟着改。另有一类偶发失败要认得出来——`CaptureShutterGestureTest` 的长按用例等的是整条拍照链路（`takePicture` → EXIF 回写 → 整张 JPEG 发布到相册）落库，模拟器相机被别的负载拖慢时会等满 20 秒超时，而单独跑这个类稳定通过（约 3 秒）；它与代码改动无关，别据此回滚。
 
 ## 13. 实施阶段与提交计划
 
