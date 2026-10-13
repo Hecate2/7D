@@ -56,8 +56,10 @@ import io.github.hecate2.D7.util.Locales
 import io.github.hecate2.D7.util.applyKeepScreenOn
 import kotlin.math.abs
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.launch
 
 /**
@@ -700,20 +702,34 @@ class CaptureActivity : ComponentActivity() {
         capturing = true
         binding.shutter.alpha = 0.4f
         lifecycleScope.launch {
-            // 快门优先：先掐掉在飞的定时对焦，否则拍照会排在它后面等
-            camera.cancelFocusMetering()
-            val imageCapture = camera.imageCapture
-            photoAttempts++
-            val uri = if (imageCapture != null) photoStore.capture(imageCapture, meta) else null
-            repository.appendPoint(
-                groupId,
-                region,
-                PointRecord(az = az, el = el, photoUri = uri?.toString(), takenAt = takenAt),
-                viaHorizon = longPress,
-            )
-            capturing = false
-            binding.shutter.alpha = 1f
-            if (uri == null && imageCapture != null) toast(R.string.capture_photo_failed)
+            try {
+                // 整段不可取消。快门按下去之后用户可能立刻按返回或「完成」把页面销毁，而
+                // `lifecycleScope` 在销毁时取消协程：取消如果正好落在下面那段 IO 里，照片
+                // 已经发布到相册、appendPoint 却没执行，相册里就多一张对不上任何点的照片，
+                // 用户还看不到任何提示。要么两件都成、要么两件都不成，所以这一整段跑完为止。
+                withContext(NonCancellable) {
+                    // 快门优先：先掐掉在飞的定时对焦，否则拍照会排在它后面等
+                    camera.cancelFocusMetering()
+                    val imageCapture = camera.imageCapture
+                    photoAttempts++
+                    val uri = if (imageCapture != null) photoStore.capture(imageCapture, meta) else null
+                    repository.appendPoint(
+                        groupId,
+                        region,
+                        PointRecord(az = az, el = el, photoUri = uri?.toString(), takenAt = takenAt),
+                        viaHorizon = longPress,
+                    )
+                    // 页面已经走掉就不再弹提示：这句话是给站在这一页上的人看的
+                    if (uri == null && imageCapture != null && !isFinishing && !isDestroyed) {
+                        toast(R.string.capture_photo_failed)
+                    }
+                }
+            } finally {
+                // 复位放在 finally 而不是顺序执行：拍照或写盘抛一次异常，原先 capturing 会
+                // 永远停在 true、快门透明度也停在 0.4，这一页之后再也拍不了照且看不出原因。
+                capturing = false
+                binding.shutter.alpha = 1f
+            }
         }
     }
 

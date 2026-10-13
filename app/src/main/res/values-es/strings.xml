@@ -199,7 +199,7 @@
     <string name="export_store_done">%1$d series exportadas</string>
     <string name="export_store_failed">Error al exportar: el destino no admite escritura</string>
     <string name="import_store_title">Importar datos</string>
-    <string name="import_store_message">Este archivo tiene %1$d series. Al importarlo se sustituirán las %2$d actuales y no se podrá deshacer.\n\nEl archivo solo contiene ángulos y coordenadas, no las fotos, así que puede que las series importadas no encuentren sus imágenes en la galería.</string>
+    <string name="import_store_message">Este archivo tiene %1$d series. Al importarlo se sustituirán las %2$d actuales y no se podrá deshacer.\n\nEl archivo solo contiene ángulos y coordenadas, no las fotos: esas se quedan en la galería del teléfono donde se tomaron. Las series importadas van sin fotos, así que la casilla de la miniatura de cada punto queda vacía.</string>
     <string name="import_store_failed">Este archivo no es una copia válida de D7</string>
     <string name="import_store_done">%1$d series importadas</string>
     <string name="export_csv_title">D7 datos de sol</string>

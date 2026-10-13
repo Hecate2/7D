@@ -199,7 +199,7 @@
     <string name="export_store_done">Выгружено серий: %1$d</string>
     <string name="export_store_failed">Ошибка выгрузки: в выбранное место нельзя записать</string>
     <string name="import_store_title">Загрузка данных</string>
-    <string name="import_store_message">В файле серий: %1$d. При загрузке они заменят текущие %2$d, отменить это не получится.\n\nВ файле только углы и координаты, без самих фотографий, поэтому у загруженных серий может не найтись снимков в галерее.</string>
+    <string name="import_store_message">В файле серий: %1$d. При загрузке они заменят текущие %2$d, отменить это не получится.\n\nВ файле только углы и координаты, без самих фотографий: они остаются в галерее того телефона, где были сняты. У загруженных серий фотографий нет, поэтому ячейка миниатюры у каждой точки пустая.</string>
     <string name="import_store_failed">Это не файл D7</string>
     <string name="import_store_done">Загружено серий: %1$d</string>
     <string name="export_csv_title">D7 данные о солнце</string>

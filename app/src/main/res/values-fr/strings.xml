@@ -199,7 +199,7 @@
     <string name="export_store_done">%1$d séries exportées</string>
     <string name="export_store_failed">Échec de l’export : destination non accessible en écriture</string>
     <string name="import_store_title">Importer les données</string>
-    <string name="import_store_message">Ce fichier contient %1$d séries. L’import remplacera les %2$d actuelles, sans retour possible.\n\nLe fichier ne contient que des angles et des coordonnées, pas les photos : les séries importées risquent de ne pas retrouver leurs images dans la galerie.</string>
+    <string name="import_store_message">Ce fichier contient %1$d séries. L’import remplacera les %2$d actuelles, sans retour possible.\n\nLe fichier ne contient que des angles et des coordonnées, pas les photos : celles-ci restent dans la galerie du téléphone qui les a prises. Les séries importées n’ont aucune photo, la case de la miniature de chaque point reste donc vide.</string>
     <string name="import_store_failed">Ce fichier n’est pas une sauvegarde D7 valide</string>
     <string name="import_store_done">%1$d séries importées</string>
     <string name="export_csv_title">D7 données d’ensoleillement</string>

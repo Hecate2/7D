@@ -104,7 +104,15 @@ fun publishPendingMediaStore(
         }
         values.clear()
         values.put(MediaStore.MediaColumns.IS_PENDING, 0)
-        resolver.update(uri, values, null, null)
+        // 必须看返回值，理由与 [deletePhoto] 同源：`update` 对「这一行已经不在了」「provider
+        // 没让改」都回 0，而这里确实换掉了一个值，所以回 0 只能是没改成。改不了的后果是这一条
+        // 永远停在待发布状态——相册里看不见它，本应用却已经把 URI 记进点里，用户以为照片进了
+        // 相册，实际只有本应用认得。按本函数开头那句约定处理：失败就删掉条目并回 null，
+        // 让上层的三级兜底退到应用私有目录重新写一份。
+        if (resolver.update(uri, values, null, null) <= 0) {
+            resolver.delete(uri, null, null)
+            return null
+        }
         uri
     } catch (_: Exception) {
         resolver.delete(uri, null, null)

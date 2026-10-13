@@ -199,7 +199,7 @@
     <string name="export_store_done">%1$d Strecken gesichert</string>
     <string name="export_store_failed">Export fehlgeschlagen: Zielort nicht beschreibbar</string>
     <string name="import_store_title">Daten laden</string>
-    <string name="import_store_message">Diese Datei enthält %1$d Strecken. Beim Laden werden die aktuellen %2$d ersetzt, das lässt sich nicht rückgängig machen.\n\nDie Datei enthält nur Winkel und Koordinaten, nicht die Fotos selbst. Zu geladenen Strecken finden sich in der Galerie daher womöglich keine Bilder.</string>
+    <string name="import_store_message">Diese Datei enthält %1$d Strecken. Beim Laden werden die aktuellen %2$d ersetzt, das lässt sich nicht rückgängig machen.\n\nDie Datei enthält nur Winkel und Koordinaten, nicht die Fotos selbst. Die bleiben in der Galerie des Telefons, das sie aufgenommen hat. Strecken aus der Datei kommen ohne Fotos, deshalb bleibt das Vorschaubild jedes Punktes leer.</string>
     <string name="import_store_failed">Keine gültige D7-Datei</string>
     <string name="import_store_done">%1$d Strecken geladen</string>
     <string name="export_csv_title">D7-Sonnendaten</string>

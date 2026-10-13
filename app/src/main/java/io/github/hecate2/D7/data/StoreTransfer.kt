@@ -51,7 +51,7 @@ fun readStoreText(input: InputStream): String? {
  *
  * 点的角度按仓库一贯的口径**归一到合法区间**（方位 0..360、仰角 0..90），与
  * `updatePointAngles` 用同一套规则，而不是拒绝——手改过的角度常见，但一个 370 度的方位角
- * 意思明确，没必要让整份存档不可用。
+ * 意思明确，没必要让整份存档不可用。照片引用则一律丢弃，理由见 [PointRecord.sanitized]。
  */
 fun decodeStore(text: String): Store? {
     val store = runCatching {
@@ -84,15 +84,25 @@ private fun GroupRecord.sanitized(): GroupRecord? {
 }
 
 /**
- * 单点校验 + 角度归一。
+ * 单点校验 + 角度归一，照片引用一律清空。
  *
  * 这里的有限性判断在正常路径上不会触发：序列化器默认就不放 NaN 与 Infinity 进来（见
  * `nonFiniteNumbersAreRejected`）。留着是因为下面两处归一都是「原样返还」式的——
  * `normalize360(NaN)` 仍是 NaN，`coerceIn` 也放 NaN 过去——一旦哪天 JSON 配置改成允许
  * 特殊浮点值，这两行就是唯一的拦截点，而它拦不住的话，NaN 会一路走到落盘才炸。
+ *
+ * 照片引用不进导入数据：`photoUri` 只在本机有意义（MediaStore 的行号、私有目录的路径），
+ * 而它指向的字节不在文件里。跨设备导入时那个行号大体上会命中**别人另一张照片**——后果不止
+ * 缩略图张冠李戴，删点与删组会照着自己记下的 URI 去删，把与本应用无关的照片从相册里抹掉。
+ * `file://` 那种更直接：删除实现直接删那个路径，未校验的路径等于一个可删任意本地文件的入口。
+ * 所以这里不是「校验一下方案」而是整类清空——存档本来就不含照片，导入后没有照片才是如实状态。
  */
 private fun PointRecord.sanitized(): PointRecord? {
     if (!az.isFinite() || !el.isFinite()) return null
     if (takenAt < 0L) return null
-    return copy(az = Angles.normalize360(az), el = el.coerceIn(0.0, 90.0))
+    return copy(
+        az = Angles.normalize360(az),
+        el = el.coerceIn(0.0, 90.0),
+        photoUri = null,
+    )
 }

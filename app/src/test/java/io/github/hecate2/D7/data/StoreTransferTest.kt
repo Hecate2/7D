@@ -59,8 +59,12 @@ class StoreTransferTest {
             text.replace(from, to)
         }
 
+    /**
+     * 往返一致，只有照片引用例外：导入这条路一律不把 `photoUri` 带进来（理由见下一条用例）。
+     * 所以期望值是把照片清掉之后的那一份，而不是原样那一份。
+     */
     @Test
-    fun roundTripKeepsEveryField() {
+    fun roundTripKeepsEveryFieldExceptPhotoReferences() {
         val groups = listOf(
             group(),
             group(
@@ -77,7 +81,46 @@ class StoreTransferTest {
                 ceiling = listOf(PointRecord(az = 90.0, el = 45.0, takenAt = 9L)),
             ),
         )
-        assertEquals(Store(groups = groups), decodeStore(encodeStore(groups)))
+        val withoutPhotos = groups.map { group ->
+            group.copy(
+                external = group.external.map { it.copy(photoUri = null) },
+                ceiling = group.ceiling.map { it.copy(photoUri = null) },
+            )
+        }
+        assertEquals(Store(groups = withoutPhotos), decodeStore(encodeStore(groups)))
+    }
+
+    /**
+     * 导入进来的照片引用一个都不留。
+     *
+     * 这不是洁癖：`photoUri` 是本机的东西（MediaStore 的行号、私有目录的路径），而它指向的字节
+     * 不在文件里。跨设备导入时那个行号大体上会命中另一台设备上另一张照片，而删点与删组会照着
+     * 它去删，把与本应用无关的照片从相册里抹掉；`file://` 那种更直接，删除实现就是删那个路径。
+     * 四种写法一起验：清空是按「一律丢掉」做的，不是按方案挑。
+     */
+    @Test
+    fun importedPointsCarryNoPhotoReference() {
+        val uris = listOf(
+            "content://media/external/images/media/4242",
+            "file:///storage/emulated/0/Pictures/D7/阳台/D7_1.jpg",
+            "https://example.com/a.jpg",
+            "乱七八糟",
+        )
+        val groups = uris.mapIndexed { index, uri ->
+            group(
+                id = "g$index",
+                name = "组$index",
+                external = listOf(PointRecord(az = 1.0, el = 2.0, photoUri = uri, takenAt = 1L)),
+                ceiling = listOf(PointRecord(az = 3.0, el = 4.0, photoUri = uri, takenAt = 2L)),
+            )
+        }
+        val decoded = decodeStore(encodeStore(groups))
+        assertEquals(uris.size, decoded?.groups?.size)
+        assertTrue(decoded!!.groups.flatMap { it.external + it.ceiling }.all { it.photoUri == null })
+        // 清掉的只是照片引用，角度与拍摄时间照旧
+        assertEquals(1.0, decoded.groups[0].external.single().az, 1e-9)
+        assertEquals(4.0, decoded.groups[0].ceiling.single().el, 1e-9)
+        assertEquals(2L, decoded.groups[0].ceiling.single().takenAt)
     }
 
     /**

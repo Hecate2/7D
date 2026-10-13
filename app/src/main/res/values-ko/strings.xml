@@ -199,7 +199,7 @@
     <string name="export_store_done">세트 %1$d개를 내보냈습니다</string>
     <string name="export_store_failed">내보내기 실패: 선택한 위치에 쓸 수 없습니다</string>
     <string name="import_store_title">데이터 가져오기</string>
-    <string name="import_store_message">이 파일에는 세트가 %1$d개 있습니다. 가져오면 현재 %2$d개와 바뀌고 되돌릴 수 없습니다.\n\n파일에는 각도와 좌표만 들어 있고 사진 자체는 없습니다. 가져온 세트의 사진이 앨범에 없을 수 있습니다.</string>
+    <string name="import_store_message">이 파일에는 세트가 %1$d개 있습니다. 가져오면 현재 %2$d개와 바뀌고 되돌릴 수 없습니다.\n\n파일에는 각도와 좌표만 들어 있고 사진 자체는 없습니다. 사진은 촬영한 스마트폰의 앨범에 남습니다. 가져온 세트에는 사진이 붙지 않으므로 각 점의 미리보기 칸이 비어 있습니다.</string>
     <string name="import_store_failed">올바른 D7 파일이 아닙니다</string>
     <string name="import_store_done">세트 %1$d개를 가져왔습니다</string>
     <string name="export_csv_title">D7 일조 데이터</string>

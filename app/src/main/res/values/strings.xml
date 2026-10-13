@@ -220,7 +220,7 @@
     <string name="export_store_done">已导出 %1$d 个照片组</string>
     <string name="export_store_failed">导出失败：请检查所选位置是否可写</string>
     <string name="import_store_title">导入存档</string>
-    <string name="import_store_message">这份存档有 %1$d 个照片组，导入后会替换当前的 %2$d 个照片组，当前数据将丢失且不能撤销。\n\n存档里只有角度与坐标，不含照片本身；导入后的组在相册里未必找得到对应的照片。</string>
+    <string name="import_store_message">这份存档有 %1$d 个照片组，导入后会替换当前的 %2$d 个照片组，当前数据将丢失且不能撤销。\n\n存档里只有角度与坐标，不含照片本身，照片留在拍它的那台手机的相册里；导入后的组不带照片，点列里缩略图那一格是空的。</string>
     <string name="import_store_failed">这份文件不是有效的七日存档</string>
     <string name="import_store_done">已导入 %1$d 个照片组</string>
 

@@ -199,7 +199,7 @@
     <string name="export_store_done">Exported %1$d photo sets</string>
     <string name="export_store_failed">Export failed: the chosen location is not writable</string>
     <string name="import_store_title">Import data</string>
-    <string name="import_store_message">This file holds %1$d photo sets. Importing replaces the current %2$d and cannot be undone.\n\nThe file carries angles and coordinates only, not the photos themselves, so imported sets may not find their pictures in the gallery.</string>
+    <string name="import_store_message">This file holds %1$d photo sets. Importing replaces the current %2$d and cannot be undone.\n\nThe file carries angles and coordinates only, not the photos themselves: those stay in the album of the phone that took them. Imported sets carry no photos, so the thumbnail cell of every point stays empty.</string>
     <string name="import_store_failed">Not a valid D7 file</string>
     <string name="import_store_done">Imported %1$d photo sets</string>
     <string name="export_csv_title">D7 sunlight data</string>

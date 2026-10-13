@@ -199,7 +199,7 @@
     <string name="export_store_done">%1$d 件のセットを書き出しました</string>
     <string name="export_store_failed">書き出し失敗：選んだ場所に書けません</string>
     <string name="import_store_title">データの読み込み</string>
-    <string name="import_store_message">このファイルには %1$d 件のセットがあります。読み込むと現在の %2$d 件と入れ替わり、元に戻せません。\n\nファイルに入っているのは角度と座標だけです。写真そのものは含まれないため、読み込んだセットに対応する写真がアルバムに見つからないことがあります。</string>
+    <string name="import_store_message">このファイルには %1$d 件のセットがあります。読み込むと現在の %2$d 件と入れ替わり、元に戻せません。\n\nファイルに入っているのは角度と座標だけで、写真そのものは入っていません。写真は撮影したスマートフォンのアルバムに残ります。読み込んだセットに写真は付かないため、各点のサムネイルは空欄になります。</string>
     <string name="import_store_failed">有効な D7 のファイルではありません</string>
     <string name="import_store_done">%1$d 件のセットを読み込みました</string>
     <string name="export_csv_title">D7 日照データ</string>
