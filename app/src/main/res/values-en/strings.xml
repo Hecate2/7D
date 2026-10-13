@@ -9,6 +9,8 @@
     <string name="groups_new">+ New</string>
     <string name="groups_subtitle">One set per window · kept on this phone</string>
     <string name="groups_empty">No photo sets yet\nTap “+ New” and name it\nStand at the window you want to measure</string>
+    <string name="groups_export_data">Export data</string>
+    <string name="groups_import_data">Import data</string>
 
     <!-- Interface language: system + 8 -->
     <string name="language">Language</string>
@@ -190,6 +192,16 @@
     <string name="export_location_downloads">Downloads/D7</string>
     <string name="export_location_pictures">Pictures/D7</string>
     <string name="export_file_name">%1$s-sun-%2$s.%3$s</string>
+
+    <!-- 存档导出/导入：走系统文件选择器，落点由用户当场决定，所以文案里不写具体目录 -->
+    <string name="export_store_file_name">D7-photo-sets-%1$s.json</string>
+    <string name="export_store_empty">No photo sets to export yet</string>
+    <string name="export_store_done">Exported %1$d photo sets</string>
+    <string name="export_store_failed">Export failed: the chosen location is not writable</string>
+    <string name="import_store_title">Import data</string>
+    <string name="import_store_message">This file holds %1$d photo sets. Importing replaces the current %2$d and cannot be undone.\n\nThe file carries angles and coordinates only, not the photos themselves, so imported sets may not find their pictures in the gallery.</string>
+    <string name="import_store_failed">Not a valid D7 file</string>
+    <string name="import_store_done">Imported %1$d photo sets</string>
     <string name="export_csv_title">D7 sunlight data</string>
     <string name="export_csv_row_group_name">Set</string>
     <string name="export_csv_row_latitude">Latitude</string>

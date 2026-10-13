@@ -9,6 +9,8 @@
     <string name="groups_new">+ 새로</string>
     <string name="groups_subtitle">창문마다 한 세트 · 이 기기에만 저장</string>
     <string name="groups_empty">아직 세트가 없습니다\n“+ 새로”로 이름을 붙이고\n측정할 창문 앞에 서세요</string>
+    <string name="groups_export_data">데이터 내보내기</string>
+    <string name="groups_import_data">데이터 가져오기</string>
 
     <!-- 언어 -->
     <string name="language">표시 언어</string>
@@ -190,6 +192,16 @@
     <string name="export_location_downloads">다운로드/D7</string>
     <string name="export_location_pictures">사진/D7</string>
     <string name="export_file_name">%1$s-일조-%2$s.%3$s</string>
+
+    <!-- 存档导出/导入：走系统文件选择器，落点由用户当场决定，所以文案里不写具体目录 -->
+    <string name="export_store_file_name">D7-사진세트-%1$s.json</string>
+    <string name="export_store_empty">내보낼 세트가 아직 없습니다</string>
+    <string name="export_store_done">세트 %1$d개를 내보냈습니다</string>
+    <string name="export_store_failed">내보내기 실패: 선택한 위치에 쓸 수 없습니다</string>
+    <string name="import_store_title">데이터 가져오기</string>
+    <string name="import_store_message">이 파일에는 세트가 %1$d개 있습니다. 가져오면 현재 %2$d개와 바뀌고 되돌릴 수 없습니다.\n\n파일에는 각도와 좌표만 들어 있고 사진 자체는 없습니다. 가져온 세트의 사진이 앨범에 없을 수 있습니다.</string>
+    <string name="import_store_failed">올바른 D7 파일이 아닙니다</string>
+    <string name="import_store_done">세트 %1$d개를 가져왔습니다</string>
     <string name="export_csv_title">D7 일조 데이터</string>
     <string name="export_csv_row_group_name">세트명</string>
     <string name="export_csv_row_latitude">위도</string>

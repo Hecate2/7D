@@ -9,6 +9,8 @@
     <string name="groups_new">+ Новая</string>
     <string name="groups_subtitle">Одна серия на окно · хранится на телефоне</string>
     <string name="groups_empty">Серий пока нет\nНажмите «+ Новая» и дайте имя\nВстаньте у нужного окна</string>
+    <string name="groups_export_data">Выгрузить данные</string>
+    <string name="groups_import_data">Загрузить данные</string>
 
     <!-- Язык -->
     <string name="language">Язык</string>
@@ -190,6 +192,16 @@
     <string name="export_location_downloads">Загрузки/D7</string>
     <string name="export_location_pictures">Фото/D7</string>
     <string name="export_file_name">%1$s-солнце-%2$s.%3$s</string>
+
+    <!-- 存档导出/导入：走系统文件选择器，落点由用户当场决定，所以文案里不写具体目录 -->
+    <string name="export_store_file_name">D7-серии-%1$s.json</string>
+    <string name="export_store_empty">Пока нечего выгружать</string>
+    <string name="export_store_done">Выгружено серий: %1$d</string>
+    <string name="export_store_failed">Ошибка выгрузки: в выбранное место нельзя записать</string>
+    <string name="import_store_title">Загрузка данных</string>
+    <string name="import_store_message">В файле серий: %1$d. При загрузке они заменят текущие %2$d, отменить это не получится.\n\nВ файле только углы и координаты, без самих фотографий, поэтому у загруженных серий может не найтись снимков в галерее.</string>
+    <string name="import_store_failed">Это не файл D7</string>
+    <string name="import_store_done">Загружено серий: %1$d</string>
     <string name="export_csv_title">D7 данные о солнце</string>
     <string name="export_csv_row_group_name">Серия</string>
     <string name="export_csv_row_latitude">Широта</string>

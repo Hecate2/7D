@@ -26,6 +26,9 @@ import androidx.lifecycle.repeatOnLifecycle
 import io.github.hecate2.D7.R
 import io.github.hecate2.D7.data.GroupRecord
 import io.github.hecate2.D7.data.GroupRepository
+import io.github.hecate2.D7.data.decodeStore
+import io.github.hecate2.D7.data.encodeStore
+import io.github.hecate2.D7.data.readStoreText
 import io.github.hecate2.D7.databinding.ActivityGroupsBinding
 import io.github.hecate2.D7.databinding.DialogDeleteGroupBinding
 import io.github.hecate2.D7.databinding.DialogNewGroupBinding
@@ -81,6 +84,31 @@ class GroupsActivity : ComponentActivity() {
      */
     private var exportInFlight = false
 
+    /**
+     * 是否有导入在读。与 [exportInFlight] 同一个用意：读是异步的，而选择器已经返回，
+     * 中间这一段没有任何按钮可以置灰，连点两下会弹出两个确认对话框，两份存档各自覆盖一遍。
+     */
+    private var importInFlight = false
+
+    /**
+     * 存档导出的落点由用户当场选（SAF），app 不指定目录。这样既不需要任何存储权限，
+     * 也把「存到网盘还是存到下载」这个只有用户知道答案的问题交回给用户。
+     */
+    private val createStoreDoc =
+        registerForActivityResult(ActivityResultContracts.CreateDocument(STORE_MIME)) { uri ->
+            if (uri != null) writeStoreTo(uri)
+        }
+
+    /**
+     * 导入来源同样由用户选。放进 mime 列表的不止 `application/json`：不少文件管理器把 `.json`
+     * 报成 `text/plain` 或 `application/octet-stream`，只认一种会让用户在自家文件上看见灰条选不中。
+     * 真正把关的是 [decodeStore] 那套校验，不是选择器给的类型。
+     */
+    private val openStoreDoc =
+        registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+            if (uri == null) importInFlight = false else readStoreFrom(uri)
+        }
+
     private val locationPermission =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
             val action = pendingLocate
@@ -110,6 +138,8 @@ class GroupsActivity : ComponentActivity() {
         binding.newButton.setOnClickListener { showNewGroupDialog() }
         binding.langButton.setOnClickListener { showLanguageDialog() }
         binding.keepOnButton.setOnClickListener { toggleKeepScreenOn() }
+        binding.exportStoreButton.setOnClickListener { startExportStore() }
+        binding.importStoreButton.setOnClickListener { startImportStore() }
         updateKeepOnUi()
 
         lifecycleScope.launch {
@@ -309,6 +339,83 @@ class GroupsActivity : ComponentActivity() {
             }
             repository.deleteGroup(group.id)
         }
+    }
+
+    /**
+     * 导出全部存档。空库先挡掉：导出一个空文件出去，用户看不出这算成功还是算没做事。
+     */
+    private fun startExportStore() {
+        if (repository.groups.value.isEmpty()) {
+            toast(getString(R.string.export_store_empty))
+            return
+        }
+        val stamp = LocalDate.now().toString().replace("-", "")
+        createStoreDoc.launch(getString(R.string.export_store_file_name, stamp))
+    }
+
+    /**
+     * 写出的是当前内存态，不去读盘：内存态就是刚发射的那一份，而写队列是异步的，读盘反而
+     * 可能撞上还没跑完的那次写入，导出前一版数据。`wt` 是截断模式——用户在系统选择器里
+     * 选中一个已存在的文件时，不能把新内容接在旧内容的后面。
+     */
+    private fun writeStoreTo(uri: Uri) {
+        val groups = repository.groups.value
+        lifecycleScope.launch {
+            val ok = withContext(Dispatchers.IO) {
+                runCatching {
+                    contentResolver.openOutputStream(uri, "wt")?.use { sink ->
+                        sink.write(encodeStore(groups).toByteArray(Charsets.UTF_8))
+                    } != null
+                }.getOrDefault(false)
+            }
+            if (ok) {
+                toast(getString(R.string.export_store_done, groups.size))
+            } else {
+                toast(getString(R.string.export_store_failed))
+            }
+        }
+    }
+
+    private fun startImportStore() {
+        if (importInFlight) return
+        importInFlight = true
+        openStoreDoc.launch(STORE_MIME_CANDIDATES)
+    }
+
+    /** 读进来先整份过一遍校验，通过了才问用户要不要覆盖——不合规的文件连对话框都不必弹。 */
+    private fun readStoreFrom(uri: Uri) {
+        lifecycleScope.launch {
+            val text = withContext(Dispatchers.IO) {
+                runCatching {
+                    contentResolver.openInputStream(uri)?.use { readStoreText(it) }
+                }.getOrNull()
+            }
+            importInFlight = false
+            val groups = text?.let { decodeStore(it) }?.groups
+            if (groups == null) {
+                toast(getString(R.string.import_store_failed))
+                return@launch
+            }
+            confirmImport(groups)
+        }
+    }
+
+    /**
+     * 覆盖前的确认。**必须把两边的组数都写出来**：这是不可撤销的一步，用户要知道自己
+     * 正在用几组换掉几组，而不是只知道「要导入」。
+     */
+    private fun confirmImport(groups: List<GroupRecord>) {
+        AlertDialog.Builder(this)
+            .setTitle(R.string.import_store_title)
+            .setMessage(
+                getString(R.string.import_store_message, groups.size, repository.groups.value.size),
+            )
+            .setNegativeButton(R.string.cancel, null)
+            .setPositiveButton(R.string.confirm) { _, _ ->
+                repository.replaceAll(groups)
+                toast(getString(R.string.import_store_done, groups.size))
+            }
+            .show()
     }
 
     private fun showExportDialog(group: GroupRecord) {
@@ -531,5 +638,11 @@ class GroupsActivity : ComponentActivity() {
         const val MENU_EDIT = 1
         const val MENU_DELETE = 2
         const val MENU_EXPORT = 3
+
+        /** 存档的 mime。写出去时用它，读进来时只用它一种会让部分文件管理器里的文件选不中。 */
+        const val STORE_MIME = "application/json"
+
+        val STORE_MIME_CANDIDATES =
+            arrayOf(STORE_MIME, "text/plain", "application/octet-stream")
     }
 }

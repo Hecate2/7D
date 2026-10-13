@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 导出存档：一只托盘，一支从托盘里向上出去的箭头。描边式，与手电筒/对焦/常亮/时区那批
+     图标同一套线宽（1.9）与圆头。托盘左右两壁同在 13.6 起、外沿 4.2–19.8，箭头居中于 x=12，
+     箭尾落在 13.2——恰好贴着托盘口，读起来是「从这只盘子里取出去」而不是两支无关的笔画。
+     与 ic_store_in 是同一只托盘的两个方向，改坐标时两只一起改。 -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:tint="@color/paper"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- 托盘：开口朝上的方框轮廓，底角半径 1.8 -->
+    <path
+        android:pathData="M4.2,13.6 L4.2,18.4 a1.8,1.8 0 0,0 1.8,1.8 L18,20.2 a1.8,1.8 0 0,0 1.8,-1.8
+            L19.8,13.6"
+        android:strokeColor="@color/paper"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:strokeWidth="1.9" />
+
+    <!-- 箭头：主干 + 两条斜线组成的箭头尖，指向托盘之外（上） -->
+    <path
+        android:pathData="M12,3.4 L12,13.2"
+        android:strokeColor="@color/paper"
+        android:strokeLineCap="round"
+        android:strokeWidth="1.9" />
+
+    <path
+        android:pathData="M7.9,7.5 L12,3.4 L16.1,7.5"
+        android:strokeColor="@color/paper"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:strokeWidth="1.9" />
+</vector>

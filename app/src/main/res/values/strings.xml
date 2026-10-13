@@ -9,6 +9,8 @@
     <string name="groups_new">+ 新建</string>
     <string name="groups_subtitle">一窗一组 · 全部保存在本机</string>
     <string name="groups_empty">还没有照片组\n点右上角「+ 新建」起个名字\n站在要看的那扇窗前开拍</string>
+    <string name="groups_export_data">导出数据</string>
+    <string name="groups_import_data">导入数据</string>
 
     <!-- 界面语言：跟随系统 + 8 种。语言名用各自的写法，不翻译。 -->
     <string name="language">界面语言</string>
@@ -211,6 +213,16 @@
     <string name="export_location_downloads">下载/D7</string>
     <string name="export_location_pictures">相册 Pictures/D7</string>
     <string name="export_file_name">%1$s-日照-%2$s.%3$s</string>
+
+    <!-- 存档导出/导入：走系统文件选择器，落点由用户当场决定，所以文案里不写具体目录 -->
+    <string name="export_store_file_name">七日-照片组存档-%1$s.json</string>
+    <string name="export_store_empty">还没有照片组，没有可导出的数据</string>
+    <string name="export_store_done">已导出 %1$d 个照片组</string>
+    <string name="export_store_failed">导出失败：请检查所选位置是否可写</string>
+    <string name="import_store_title">导入存档</string>
+    <string name="import_store_message">这份存档有 %1$d 个照片组，导入后会替换当前的 %2$d 个照片组，当前数据将丢失且不能撤销。\n\n存档里只有角度与坐标，不含照片本身；导入后的组在相册里未必找得到对应的照片。</string>
+    <string name="import_store_failed">这份文件不是有效的七日存档</string>
+    <string name="import_store_done">已导入 %1$d 个照片组</string>
 
     <!-- 导出 CSV -->
     <string name="export_csv_title">七日 D7 日照数据</string>

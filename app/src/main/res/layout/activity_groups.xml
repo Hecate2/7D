@@ -63,6 +63,35 @@
             android:scaleType="fitCenter"
             android:src="@drawable/ic_keep_on" />
 
+        <!-- 存档导出/导入：一对方向相反的托盘图标。走系统文件选择器（SAF），所以不需要任何
+             存储权限，落点由用户当场决定（网盘、下载、外置卡都行），app 不指定去处。
+             窄屏上这一行已经排了四件东西（语言/常亮/新建），这两个键因此用 6dp 间距而非常亮的 8dp。 -->
+        <ImageView
+            android:id="@+id/exportStoreButton"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:layout_marginEnd="6dp"
+            android:background="@drawable/bg_icon_button"
+            android:clickable="true"
+            android:contentDescription="@string/groups_export_data"
+            android:focusable="true"
+            android:padding="7dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_store_out" />
+
+        <ImageView
+            android:id="@+id/importStoreButton"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:layout_marginEnd="6dp"
+            android:background="@drawable/bg_icon_button"
+            android:clickable="true"
+            android:contentDescription="@string/groups_import_data"
+            android:focusable="true"
+            android:padding="7dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_store_in" />
+
         <TextView
             android:id="@+id/newButton"
             android:layout_width="wrap_content"

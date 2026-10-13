@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Android 12 及以上的备份规则，分云端备份与换机传输两条通道。
+
+  云端备份（cloud-backup）与 Android 11 及以下同一套取舍：排掉 files/captures，理由见
+  backup_rules.xml（那批副本会顶破 25MB 的单应用上限，超了连 groups.json 都保不住）。
+
+  换机传输（device-transfer）不排：这是两台手机之间直连搬数据，没有 25MB 那种上限，
+  连私有目录里那些兜底照片一起带走反而是好事。
+-->
+<data-extraction-rules>
+    <cloud-backup>
+        <exclude
+            domain="file"
+            path="captures/" />
+    </cloud-backup>
+    <device-transfer />
+</data-extraction-rules>

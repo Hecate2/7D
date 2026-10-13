@@ -9,6 +9,8 @@
     <string name="groups_new">+ Nueva</string>
     <string name="groups_subtitle">Una serie por ventana · se queda en el móvil</string>
     <string name="groups_empty">Aún no hay series\nToca «+ Nueva» y ponle nombre\nColócate en la ventana a medir</string>
+    <string name="groups_export_data">Exportar datos</string>
+    <string name="groups_import_data">Importar datos</string>
 
     <!-- Idioma -->
     <string name="language">Idioma</string>
@@ -190,6 +192,16 @@
     <string name="export_location_downloads">Descargas/D7</string>
     <string name="export_location_pictures">Fotos/D7</string>
     <string name="export_file_name">%1$s-sol-%2$s.%3$s</string>
+
+    <!-- 存档导出/导入：走系统文件选择器，落点由用户当场决定，所以文案里不写具体目录 -->
+    <string name="export_store_file_name">D7-series-%1$s.json</string>
+    <string name="export_store_empty">Aún no hay series que exportar</string>
+    <string name="export_store_done">%1$d series exportadas</string>
+    <string name="export_store_failed">Error al exportar: el destino no admite escritura</string>
+    <string name="import_store_title">Importar datos</string>
+    <string name="import_store_message">Este archivo tiene %1$d series. Al importarlo se sustituirán las %2$d actuales y no se podrá deshacer.\n\nEl archivo solo contiene ángulos y coordenadas, no las fotos, así que puede que las series importadas no encuentren sus imágenes en la galería.</string>
+    <string name="import_store_failed">Este archivo no es una copia válida de D7</string>
+    <string name="import_store_done">%1$d series importadas</string>
     <string name="export_csv_title">D7 datos de sol</string>
     <string name="export_csv_row_group_name">Serie</string>
     <string name="export_csv_row_latitude">Latitud</string>

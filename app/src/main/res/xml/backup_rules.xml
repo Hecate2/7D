@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Android 11 及以下的备份规则（对应的新写法见 data_extraction_rules.xml）。
+
+  只写一条 exclude，其余全部保留：要从备份里救回来的就是 files/groups.json 与那几项偏好，
+  它们都很小。要挡掉的是 files/captures——那是拍照落盘「公共目录 → 私有目录」三级兜底里
+  最后一跳的副本，一张几 MB，攒上十几张就能顶破 Auto Backup 那 25MB 的单应用上限；一旦超限，
+  失败的是**整个应用**的备份，连 groups.json 一起丢，等于这一趟白开。
+
+  照片原件在系统相册里，由系统自己那份媒体备份负责，这里排掉的只是没人指望的副本。
+-->
+<full-backup-content>
+    <exclude
+        domain="file"
+        path="captures/" />
+</full-backup-content>

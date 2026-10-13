@@ -53,6 +53,19 @@ data class Store(
 )
 
 /**
+ * 存档的 JSON 配置，落盘与导入导出共用一份。
+ *
+ * `ignoreUnknownKeys` 让旧版本读得懂新版本写的文件（多出来的键直接跳过）；
+ * `encodeDefaults` 保持默认的 false，等于默认值的字段不写出，所以文件里看不到
+ * `version`、`altitude`、`gapAfter` 这些缺省项。导入导出必须与落盘逐字节同源，
+ * 否则「导出的文件能被本机导入」就成了巧合而不是保证。
+ */
+internal val StoreJson = Json {
+    ignoreUnknownKeys = true
+    prettyPrint = true
+}
+
+/**
  * 照片组仓库：全部组数据以 JSON 存放于 filesDir/groups.json。
  *
  * 落盘在单线程写队列上异步执行（先写临时文件再原子改名，文件系统不支持原子改名时回退普通改名），
@@ -63,11 +76,6 @@ data class Store(
  * 从而把「读改写不串行化就丢点」这条回归护栏放进 `./gradlew test`，不必每次起设备。
  */
 class GroupRepository internal constructor(private val file: File) {
-
-    private val json = Json {
-        ignoreUnknownKeys = true
-        prettyPrint = true
-    }
 
     /** 单线程写队列：全部落盘异步执行，界面线程不被 IO 阻塞。 */
     private val writer = Executors.newSingleThreadExecutor { runnable ->
@@ -119,6 +127,15 @@ class GroupRepository internal constructor(private val file: File) {
     fun deleteGroup(id: String) = synchronized(stateLock) {
         publish(_groups.value.filterNot { it.id == id })
     }
+
+    /**
+     * 用一份外部存档整份替换当前数据，导入用。
+     *
+     * **是替换不是合并**：合并要处理 id 撞车、同组两份点列谁为准这类规则，而那些规则没有
+     * 一个能算「显然正确」，反倒会让用户在两次导入之后拿到一份自己也说不清的混合数据。
+     * 对话里会把将被覆盖的组数讲明，用户确认过才走到这里。
+     */
+    fun replaceAll(groups: List<GroupRecord>) = synchronized(stateLock) { publish(groups) }
 
     /**
      * 该组照片在相册中的文件夹名：取清洗后的组名；同名组只有最早创建者（按 createdAt、id 排序）
@@ -219,7 +236,7 @@ class GroupRepository internal constructor(private val file: File) {
     private fun readStore(): Store {
         if (!file.exists()) return Store()
         return try {
-            json.decodeFromString(Store.serializer(), file.readText())
+            StoreJson.decodeFromString(Store.serializer(), file.readText())
         } catch (_: Exception) {
             backupUnreadableStore()
             Store()
@@ -243,7 +260,7 @@ class GroupRepository internal constructor(private val file: File) {
 
     private fun persist(store: Store) {
         val tmp = File(file.parentFile, file.name + ".tmp")
-        tmp.writeText(json.encodeToString(Store.serializer(), store))
+        tmp.writeText(StoreJson.encodeToString(Store.serializer(), store))
         try {
             Files.move(
                 tmp.toPath(),

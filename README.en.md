@@ -47,6 +47,8 @@ The capture and results screens each carry a back arrow at the top left that ret
 
 All groups live on the group management screen, one card per group: the name, the solstice verdict, and each zone's state (external point count with coverage, ceiling point count or an empty dashed box). Locations read longitude first, latitude second (`121.47°E 31.23°N`), matching the longitude-above-latitude order in the dialogs. Tap a card for results, long-press to edit (name, coordinates, timezone), delete or export; the top-right button creates a group and jumps straight into capture.
 
+Two tray icons sit at the top right as well. The one pointing out exports every group into a single `.json` file, the one pointing in imports from such a file. Where it goes and where it comes from are both chosen on the spot in the system file picker, so the app names no directory and needs no storage permission: cloud drive, Downloads or a removable card all work. An import replaces everything rather than merging, and the confirmation states how many sets the file holds and how many it will replace, because that step cannot be undone. The file carries angles and coordinates only. The photos are not in it, so imported sets may not find their pictures in the gallery on another phone.
+
 ![Group management](img/ui-groups.svg)
 
 The viewfinder carries live reference arcs: blue dashed for the winter solstice sun path, the lowest of the year; red dashed for the equinoxes, in between; orange dashed for the summer solstice, the highest, usually off the top of the screen until you tilt the phone up. A white solid line marks today's sun path, for same-day checks. The gold dot on that line is where the sun is right now and it moves with the clock: turn around and you can see which direction the sun currently comes from. The zone chip at the top left of the viewfinder switches the active capture zone between external buildings and ceiling. The horizon and plumb lines are gray short-dashed and hidden by default; switch them on in the line settings when needed. Whichever segment falls inside the current field of view is the one drawn. When the crosshair sits below the winter-solstice arc, that point never blocks the midwinter sun and can be ignored. Above the summer-solstice arc, the point blocks the sun all year round. Near the zenith at low latitudes the projection loses accuracy, so that segment is hidden and replaced with a text hint. Whenever the aiming angle crosses either boundary, the screen shows a live reminder. Right of the accuracy pills sits the roll readout (how far the phone tilts sideways, not a heading; positive = top edge leaning right), handy for levelling the phone.
@@ -96,7 +98,11 @@ Listed honestly:
 
 ## Privacy
 
-The app requests no network permission. Photos, angles and location stay on the phone; Android auto-backup is off (allowBackup=false), so nothing is uploaded to the cloud. Export to CSV and images anytime, delete anytime. The preferences listed above also live only in local storage and take part in no sync.
+The app requests no network permission. Photos, angles and location stay on the phone, and you can export to CSV, images or a single data file, and delete, at any time.
+
+Android auto-backup is on (`allowBackup=true`): the system hands the stored photo sets and those few preferences to the backup service, which uploads them to the user's own cloud account. The system does the uploading, the app itself still has no network access. The backup does not include the photos, which live in the system gallery and are covered by the system's own media backup. Nor does it include the private-directory copies taken only when the public folder is not writable: those run a few MB each and would blow past the 25 MB per-app backup limit, and once that limit is exceeded the small data file is lost along with them. To stop the upload, turn off backup in system settings. The app has no switch of its own.
+
+Preferences such as the interface language and the reference-line toggles live only on this phone and take part in no sync of the app's own.
 
 ## UI and palette
 
