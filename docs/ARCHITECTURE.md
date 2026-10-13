@@ -237,9 +237,9 @@ printf 'storeFile=release.jks\nstorePassword=<密码>\nkeyAlias=d7\nkeyPassword=
 
 常用命令：`./gradlew :core:test`（算法单测）、`./gradlew :app:assembleDebug`（调试包）、`./gradlew :app:assembleRelease`（发布包，产物名带版本号）、`./gradlew :app:connectedDebugAndroidTest`（仪器测试，在已连接的模拟器或真机上运行，多设备时用 `ANDROID_SERIAL` 指定；该任务结束会自动卸载应用）。装机若 `installDebug` 遇到 ddmlib 超时，可改用 `adb install -r` 直接安装。
 
-反复调试单个测试类时用 `scripts/run-instrumentation.sh`：它走 `am instrument` 跳过 Gradle 的重新打包与安装，模拟器上全量 111 个用例约 74 秒（最慢一次 58 秒，那次是相机链路把两个按快门的用例拖成了等 20 秒超时）、单个类约 3 秒，而 `connectedAndroidTest` 即使命中缓存也要 35 秒以上（冷构建 57 秒）。可传类名或 `类#方法` 限定范围。脚本内把 `ANDROID_SERIAL` 默认为 `emulator-5554`——本机常同时连着真机，而 `connectedAndroidTest` 会跑遍所有连接设备，正式验收仍应显式指定设备。
+反复调试单个测试类时用 `scripts/run-instrumentation.sh`：它走 `am instrument` 跳过 Gradle 的重新打包与安装，模拟器上全量 112 个用例约 76 秒（最慢一次 58 秒，那次是相机链路把两个按快门的用例拖成了等 20 秒超时）、单个类约 3 秒，而 `connectedAndroidTest` 即使命中缓存也要 35 秒以上（冷构建 57 秒）。可传类名或 `类#方法` 限定范围。脚本内把 `ANDROID_SERIAL` 默认为 `emulator-5554`——本机常同时连着真机，而 `connectedAndroidTest` 会跑遍所有连接设备，正式验收仍应显式指定设备。
 
-仪器测试目前 111 例，分 `full`（模拟器，含多语言）与 `fast`（真机，跳过标了 `@NeedsI18n` 的用例）两种模式；用例数不是稳定值，文档里引用它的地方要跟着改。另有一类偶发失败要认得出来——`CaptureShutterGestureTest` 的长按用例等的是整条拍照链路（`takePicture` → EXIF 回写 → 整张 JPEG 发布到相册）落库，模拟器相机被别的负载拖慢时会等满 20 秒超时，而单独跑这个类稳定通过（约 3 秒）；它与代码改动无关，别据此回滚。
+仪器测试目前 112 例，分 `full`（模拟器，含多语言）与 `fast`（真机，跳过标了 `@NeedsI18n` 的用例）两种模式；用例数不是稳定值，文档里引用它的地方要跟着改。另有一类偶发失败要认得出来——`CaptureShutterGestureTest` 的长按用例等的是整条拍照链路（`takePicture` → EXIF 回写 → 整张 JPEG 发布到相册）落库，模拟器相机被别的负载拖慢时会等满 20 秒超时，而单独跑这个类稳定通过（约 3 秒）；它与代码改动无关，别据此回滚。
 
 ## 13. 实施阶段与提交计划
 

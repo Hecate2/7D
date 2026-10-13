@@ -118,6 +118,20 @@ class GroupsFlowTest {
             item is TextView && item.text.toString().isNotEmpty()
     }
 
+    /**
+     * 一个组都没有时，主显示区正中那枚大加号是整屏唯一显眼的出路，它必须和右上角那颗
+     * 走同一条路。这条要单独盯着：它只在「零个组」这个状态下存在，而本类其余用例虽然也
+     * 从零个组起步，但都是直接点右上角的 `newButton`，点不到它。
+     */
+    @Test
+    fun emptyStateBigPlusOpensTheSameDialogAsTheHeaderPlus() {
+        launchGroups()
+        onView(withId(R.id.emptyNewButton)).check(matches(isDisplayed()))
+        onView(withText(R.string.groups_empty)).check(matches(isDisplayed()))
+        onView(withId(R.id.emptyNewButton)).perform(click())
+        onView(withText(R.string.new_group_title)).check(matches(isDisplayed()))
+    }
+
     @Test
     fun newGroupDialog_longitudeAboveLatitude() {
         openNewGroupDialog()
