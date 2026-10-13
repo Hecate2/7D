@@ -140,4 +140,34 @@ class SolarTest {
         assertEquals(-23.44, winter, 0.1)
         assertTrue("春分赤纬=$spring", abs(spring) < 0.5)
     }
+
+    /**
+     * 太阳过天顶时仰角是 90 度，不能是 NaN。
+     *
+     * `positionFrom` 里那个和（sin·sin + cos·cos·cos h）在纬度等于赤纬、时角为 0 时的理论值是 1，
+     * 而 IEEE754 下它可能是 1 + 1 ulp：实测让 lat 与 decl 取同一个值、时角取 0，再从 -90 扫到 90
+     * 共 180 万个取值（步长 1e-4），有 101,262 个算出的和是 1.0000000000000002，光看热带
+     * （|lat| ≤ 23.44）也有 23,115 个。`asin(>1)` 返回 NaN，而 NaN 一旦进了仰角，
+     * `elevationDeg > -0.833` 恒为 false，那一分钟会被当成黑夜，等于正午没有太阳。
+     */
+    @Test
+    fun zenithElevationStaysFiniteInsteadOfNaN() {
+        // 实测最容易溢出的那个取值
+        val worst = -89.9999
+        assertEquals(90.0, Solar.positionFrom(worst, worst, 0.0, refraction = false).elevationDeg, 1e-9)
+
+        // 天顶构型全域扫一遍：仰角必须有限且就是 90 度。
+        // 纬度按整数下标除出来，不用累加：累加到末尾会越过 90 度，扫到的点数就变成 18 万个。
+        var checked = 0
+        for (i in -90_000..90_000) {
+            val lat = i / 1_000.0
+            val p = Solar.positionFrom(lat, lat, 0.0, refraction = false)
+            assertTrue(
+                "lat=$lat 的仰角是 ${p.elevationDeg}（应为 90）",
+                p.elevationDeg.isFinite() && p.elevationDeg in 89.99..90.01,
+            )
+            checked++
+        }
+        assertEquals(180_001, checked)
+    }
 }

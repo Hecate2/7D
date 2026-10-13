@@ -219,6 +219,44 @@ class SunlightTest {
         assertEquals(24L, dayHours(LocalDate.of(2026, 6, 21)))
     }
 
+    /**
+     * 缺口落在午夜的时区（当地 0 时直接跳到 1 时）也要把钟面钉在自己那一天。
+     *
+     * 这一类与悉尼那个 02:00 的缺口不是一回事：`date.atStartOfDay(zone)` 返回的是「那一天最早的
+     * 合法当地时刻」，在缺口日就是 01:00。原先拿它当「当地 0 时」，整个钟面因此被整体挪前
+     * 一小时、全天多出 60 个采样并溢出到次日，报出来的日出日落与可见区间全部差一小时。
+     * 2026 年有这种情况的时区：America/Havana（3-08）、America/Santiago（9-06）、
+     * Asia/Beirut（3-29）、Africa/Cairo（4-24），另加 Atlantic/Azores（3-29）。
+     */
+    @Test
+    fun midnightGapZoneKeepsTheClockFaceOnItsOwnDay() {
+        val zone = ZoneId.of("America/Havana")
+        val day = LocalDate.of(2026, 3, 8)
+        // 前提：这一天确实没有 0 时，否则下面那些断言全都退化成普通日期
+        assertEquals("这一天的 0 时应当不存在", 1, day.atStartOfDay(zone).hour)
+
+        val clock = SunlightEvaluator.DayClock(day, zone)
+        val instants = (0 until SunlightEvaluator.MINUTES_PER_DAY).map { clock.instantAt(it) }
+        assertEquals("00:00-00:59 不存在，当天只剩 1380 个有效分钟", 1380, instants.count { it != null })
+        assertEquals("缺口就是开头的 60 分钟", 60, (0 until 60).count { clock.instantAt(it) == null })
+        assertEquals(
+            "最后一个有效瞬时必须是当地 23:59，不是次日 00:59",
+            day.plusDays(1).atStartOfDay().atZone(zone).toInstant().toEpochMilli() - 60_000L,
+            instants.last(),
+        )
+        assertEquals("瞬时不能重复", 1380, instants.filterNotNull().toSet().size)
+
+        // 端到端：报出来的日出日落分钟必须就是那一刻的当地钟面读数。修复前这里差 60 分钟。
+        val r = SunlightEvaluator.evaluate(
+            23.13, -82.38, zone.id, emptyList(), emptyList(),
+            CalcMode.EXTERNAL_ONLY, day,
+        )
+        for (minute in listOf(r.sunriseMinute!!, r.sunsetMinute!!)) {
+            val reading = Instant.ofEpochMilli(clock.instantAt(minute)!!).atZone(zone)
+            assertEquals("第 $minute 分钟应读作 $minute 分钟", minute, reading.hour * 60 + reading.minute)
+        }
+    }
+
     @Test
     fun ceilingCutsPartOfTheDay() {
         // 天花板 70 度平沿覆盖 150..210 度：正午前后一部分时间被自家窗框挡住

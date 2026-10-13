@@ -56,7 +56,14 @@ object SunlightEvaluator {
      * [DailySunlight.visibleIntervals] 整体偏移一小时，界面与导出 CSV 都读错钟面时间。
      */
     internal class DayClock(date: LocalDate, private val zone: ZoneId) {
-        private val localStart = date.atStartOfDay(zone).toLocalDateTime()
+        // 取不带时区的午夜，不是 `date.atStartOfDay(zone)`。后者返回的是「那一天最早的合法当地时刻」，
+        // 而在「当地 0 时正好是拨快缺口」的时区那一天，它给的是 01:00：2026 年的 America/Havana
+        // （3 月 8 日）、America/Santiago（9 月 6 日）、Asia/Beirut（3 月 29 日）、Africa/Cairo
+        // （4 月 24 日）都是 0 时直接跳到 1 时。于是整个钟面被整体挪前一小时、全天多出 60 个采样
+        // 并溢出到次日，正是本类注释里声称要修掉的症状。那天的 00:00-00:59 也确实不存在，
+        // 交给 getValidOffsets 逐分钟判空跳过（见 instantAt）。
+        // 受影响的是哪些时区随 tzdb 版本变，所以这里不按名单判，只按钟面时间定义。
+        private val localStart = date.atStartOfDay()
         private val dayStartMillis = localStart.atZone(zone).toInstant().toEpochMilli()
 
         /** 当日无夏令时切换：本地一天正好 24 小时，墙钟分钟与偏移一一对应。 */

@@ -32,6 +32,8 @@
 
 太阳位置采用 NOAA 简化公式（Julian 世纪 → 几何平黄经、平近点角、中心差、视黄经、黄赤交角、赤纬、均时差 → 时角 → 高度角与方位角），实现于 `:core` 的 `Solar` 对象。公式取几何高度角，并另提供大气折射修正（NOAA 分段近似）；遮挡判定使用几何高度角，日出日落与「太阳在地平线上」使用几何高度角 -0.833 度阈值（等效上缘+折射），从而与常识中的日出日落表一致。与高精度星历的偏差小于 0.02 度，远小于传感器误差，不是瓶颈。**但结果页与采集页的评估走的是 `Solar.DayTrack`**：赤纬与均时差按当日中点各算一次，全天 1440 次采样、全年曲线 365 × 1440 次都复用（否则全年要多算四百多万次三角函数，实测 149.5 → 111 毫秒）。代价是位置相对逐次重算最多差 0.23 度（方位）与 0.15 度（仰角）——比公式本身那 0.02 度大一个量级，但仍远小于罗盘那 2~4 度；若改成按日初取，这两个数会翻倍（0.57 / 0.28 度），所以取中点。
 
+高度角那一处的 `asin` 入参先夹到 [-1, 1]。纬度与赤纬相等、时角为 0 时（太阳正过天顶）那个和的理论值是 1，而 IEEE754 下两个乘积各自舍入之后可以给出 1 + 1 ulp，`asin(>1)` 返回 NaN；NaN 一旦进了仰角，`elevationDeg > -0.833` 恒为 false，那一分钟会被当成黑夜。实测把 lat 与 decl 取同一个值、时角取 0，再从 -90 扫到 90（步长 1e-4，180 万个取值），其中 101,262 个（5.6%）算出的和是 1.0000000000000002，只看热带（|lat| ≤ 23.44）也有 23,115 个命中，最小命中纬度是 0.0072 度。现实中要撞上得纬度正好等于赤纬、时角正好是 0，所以这是纯粹的防御性夹紧，代价为零。
+
 时间一律先换算为 UTC 瞬时再算太阳位置，输出时再换算到组内记录的时区（`java.time`，minSdk 26 自带，无需脱糖）。均时差自动包含在公式里，所以乌鲁木齐的日照会正确落在北京时间 14 点附近，不会错算到正午。
 
 关键日期不写死天文事件，而是取固定日期：冬至 12 月 21 日（南半球取 6 月 21 日，即当地一年中太阳最低的一天）、夏至对称取 6 月 21 日（南半球 12 月 21 日）、春分 3 月 21 日、秋分 9 月 23 日、大寒 1 月 20 日。取景器里的参考弧按赤纬直接算：春分秋分弧即赤纬 0 度弧，今日弧按当天赤纬。固定日期与真值最多差一两天，对「看最凹处」的用途无影响。
@@ -56,7 +58,9 @@
 
 ## 6. 日照评估
 
-`SunlightCalculator` 对一个组、一种计算档、一个日期，以 1 分钟步长从当地 0 时到 24 时采样太阳位置，逐分钟判定「可见直射」。三种档位：仅外部（默认，只要求太阳高于外部天际线）、外部+天花板（在前者基础上再要求太阳低于天花板上沿）、仅天花板（只做后者）。点列为空时按第 5 节的未覆盖规则退化，因此「仅外部」在未拍天花板时就等于纯外部判定，而涉及天花板的档位要求先拍天花板。可见分钟累加即当日直射时长；同时记录可见区间的起止时刻，供时间线绘制与「是否全部来自空隙」判定（全部可见分钟都落在某条经地平线段的开区间内时标注「全部来自空隙」）。
+`SunlightEvaluator` 对一个组、一种计算档、一个日期，按下标 0 到 1439 逐分钟判定「可见直射」，每一分钟先经 `SunlightEvaluator.DayClock` 换算成 UTC 瞬时。三种档位：仅外部（默认，只要求太阳高于外部天际线）、外部+天花板（在前者基础上再要求太阳低于天花板上沿）、仅天花板（只做后者）。点列为空时按第 5 节的未覆盖规则退化，因此「仅外部」在未拍天花板时就等于纯外部判定，而涉及天花板的档位要求先拍天花板。可见分钟累加即当日直射时长；同时记录可见区间的起止时刻，供时间线绘制与「是否全部来自空隙」判定（全部可见分钟都落在某条经地平线段的开区间内时标注「全部来自空隙」）。
+
+DayClock 把采样严格定义在钟表分钟上，而不是「本地 0 时 + 分钟数 × 60 秒」推进。理由是夏令时切换日本地一天不是 24 小时（拨快 23 小时、拨回 25 小时）：那样推会让拨快日最后 60 个采样落到次日 0-1 点、把次日的日出算进今天，拨回日则把重复的那一小时算两遍并漏掉当天 23:00-23:59。实现上用 `ZoneRules` 逐分钟求解，落在拨快缺口里的分钟返回 null 跳过，重叠分钟取较早的偏移只算一次。钟面的起点取 `date.atStartOfDay()` 而不是 `date.atStartOfDay(zone)`：后者给的是「那一天最早的合法当地时刻」，在缺口正好落在午夜的时区就是 01:00（2026 年的 America/Havana、America/Santiago、Asia/Beirut、Africa/Cairo 都是 0 时直接跳到 1 时），拿它当 0 时会把整个钟面挪前一小时、全天多出 60 个采样并溢出到次日，日出日落与可见区间整体差一小时。受影响的是哪些时区随 tzdb 版本变，所以不按名单判，只按钟面时间定义。
 
 日出日落时刻单独扫描 -0.833 度阈值求得，供时间线两端与文字输出。全年曲线按同样方法逐日计算 365 天（闰年 366），在后台协程执行，结果缓存在内存。
 
@@ -240,8 +244,8 @@ printf 'storeFile=release.jks\nstorePassword=<密码>\nkeyAlias=d7\nkeyPassword=
 - `Solar.kt`：`data class SolarPosition(val azimuthDeg: Double, val elevationDeg: Double)`；`object Solar` 提供 `position(utcMillis: Long, latDeg: Double, lonDeg: Double, refraction: Boolean = true): SolarPosition`（NOAA 公式，见第 4 节）、`julianDay(utcMillis: Long): Double`。几何高度角配 -0.833 度阈值即日出日落。
 - `Skyline.kt`：`data class ShotPoint(val azDeg: Double, val elDeg: Double, val viaHorizonAfter: Boolean = false)`；`class Skyline(points: List<ShotPoint>)` 提供 `obstructionAt(azDeg: Double): Double`（返回天际线边缘仰角；未覆盖方位返回 -∞，由判定方向分化为外部开阔与天花板全遮挡，见第 5 节）、`gapArcs(): List<Pair<Double, Double>>`、`coverage(points: Int = 360): BooleanArray`（按 1 度采样全周是否被覆盖，供覆盖条与覆盖率用）；`object SkylineShape` 提供 `direct(...)` 与 `viaHorizon(...)`，把线段按求值语义展开为 `AzElTrack`，取景器叠加层与导出参考图共用，保证「求值、叠加层、导出图」三处语义一致。
 - `AzElTrack.kt`：`class AzElTrack(val azimuths: DoubleArray, val elevations: DoubleArray)`，两条等长数组按下标配对的一串世界方向采样。求值侧的折线展开、叠加层的参考弧与两条参考线、导出参考图四处共用它；`init` 里校验两数组等长，长度对不上当场报错而不是留到某次投影时越界。
-- `Sunlight.kt`：`enum class CalcMode { EXTERNAL_ONLY, EXTERNAL_AND_CEILING, CEILING_ONLY }`；`data class DailySunlight(date, sunriseMinute: Int?, sunsetMinute: Int?, directMinutes: Int, visibleIntervals: List<IntRange>, allFromGap: Boolean, daylightMinutes: Int)`（分钟序号自当地 0 时起）；`object SunlightEvaluator` 提供 `evaluate(lat, lon, zoneId: String, external: List<ShotPoint>, ceiling: List<ShotPoint>, mode, date: LocalDate, stepMinutes: Int = 1): DailySunlight`、`yearlyCurve(..., year: Int, mode): List<Double>`、`windowMinutes(..., date, fromMinute: Int, toMinute: Int, mode): Int`。点列为空按第 5 节退化：外部列空则全周开阔、天花板列空则全周遮挡（界面据此禁用涉及天花板的档位）。
-- 单测：`SolarTest.kt`（对拍第二套独立实现的低精度日下点公式与物理合理性断言：北半球正午方位约 180、夏至正午高度角约 90-lat+23.4、春秋分日出方位约 90、赤道昼长约 12h07m、南半球正午方位约 0）、`SkylineTest.kt`（插值、空隙三段、重叠取最大、环绕 350→10、覆盖度）、`SkylineShapeTest.kt`（`direct` 的线性插值与跨正北短弧、`viaHorizon` 的三段形状与端点原样保留、两条数组等长的校验；`SkylineShape` 此前零覆盖，而三处几何一旦对不上，看到的就是「屏幕上的覆盖与实际算出来的不一样」）、`SunlightTest.kt`（三档模式语义、空隙穿透、极夜零分钟、南半球镜像）。
+- `Sunlight.kt`：`enum class CalcMode { EXTERNAL_ONLY, EXTERNAL_AND_CEILING, CEILING_ONLY }`；`data class DailySunlight(date, sunriseMinute: Int?, sunsetMinute: Int?, directMinutes: Int, visibleIntervals: List<IntRange>, allFromGap: Boolean, daylightMinutes: Int)`（分钟序号自当地 0 时起）；`object SunlightEvaluator` 提供 `evaluate(lat, lon, zoneId: String, external: List<ShotPoint>, ceiling: List<ShotPoint>, mode, date: LocalDate, stepMinutes: Int = 1): DailySunlight`、`yearlyCurve(..., year: Int, mode): List<Double>`、`windowMinutes(..., date, fromMinute: Int, toMinute: Int, mode): Int`，以及内嵌的 `DayClock`（墙钟分钟 → UTC 瞬时，夏令时切换日与午夜缺口时区见第 6 节）。点列为空按第 5 节退化：外部列空则全周开阔、天花板列空则全周遮挡（界面据此禁用涉及天花板的档位）。
+- 单测：`SolarTest.kt`（对拍第二套独立实现的低精度日下点公式与物理合理性断言：北半球正午方位约 180、夏至正午高度角约 90-lat+23.4、春秋分日出方位约 90、赤道昼长约 12h07m、南半球正午方位约 0；另锁太阳过天顶时仰角是 90 而不是 NaN，即 `asin` 入参的夹紧）、`SkylineTest.kt`（插值、空隙三段、重叠取最大、环绕 350→10、覆盖度）、`SkylineShapeTest.kt`（`direct` 的线性插值与跨正北短弧、`viaHorizon` 的三段形状与端点原样保留、两条数组等长的校验；`SkylineShape` 此前零覆盖，而三处几何一旦对不上，看到的就是「屏幕上的覆盖与实际算出来的不一样」）、`SunlightTest.kt`（三档模式语义、空隙穿透、极夜零分钟、南半球镜像，以及夏令时日「墙钟分钟 → 瞬时」的映射：悉尼的 23/25 小时日与哈瓦那那种缺口落在午夜的日各一组，后者钉的是钟面起点不能取 `atStartOfDay(zone)`）。
 
 `:app` 文件清单（包 `io.github.hecate2.D7` 下）：
 

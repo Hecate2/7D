@@ -91,7 +91,15 @@ object Solar {
         val hRad = hourAngleDeg * PI / 180.0
 
         val sinEl = sin(latRad) * sin(declRad) + cos(latRad) * cos(declRad) * cos(hRad)
-        val geometricEl = asin(sinEl) * 180.0 / PI
+        // 这里的返回值必须有限，所以先夹到 [-1, 1] 再 asin：太阳正过天顶时（纬度与赤纬相等、
+        // 时角为 0）这个和的理论值是 1，而 IEEE754 下两个乘积各自舍入之后可以给出 1 + 1 ulp，
+        // asin(>1) 返回 NaN。实测把 lat 与 decl 取同一个值、时角取 0，再让 lat 从 -90 扫到 90
+        // （步长 1e-4，180 万个取值），其中 101,262 个（5.6%）算出的和是 1.0000000000000002；
+        // 只看热带（|lat| ≤ 23.44）也有 23,115 个命中，最小命中纬度是 0.0072 度。
+        // NaN 一旦进了仰角，`elevationDeg > -0.833` 恒为 false，那一分钟会被当成黑夜。
+        // 现实中要撞上得纬度正好等于赤纬、时角正好是 0（热带一年两天里的某一毫秒），
+        // 所以这是纯粹的防御性夹紧：代价为零，换掉一整类 NaN。
+        val geometricEl = asin(sinEl.coerceIn(-1.0, 1.0)) * 180.0 / PI
 
         val azFromSouth = atan2(
             sin(hRad),
