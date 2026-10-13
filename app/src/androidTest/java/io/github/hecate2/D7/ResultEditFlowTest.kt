@@ -19,6 +19,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
+import io.github.hecate2.D7.TestSupport.inRow
 import io.github.hecate2.D7.data.GroupRepository
 import io.github.hecate2.D7.data.PointRecord
 import io.github.hecate2.D7.data.Region
@@ -172,6 +173,56 @@ class ResultEditFlowTest {
         assertEquals(3, external.size)
         assertEquals(180.0, external[0].az, 1e-9)
         assertTrue(external.all { it.photoUri != null })
+    }
+
+    /**
+     * 非有限数不许进模型。
+     *
+     * 批量编辑是自由文本（`textMultiLine`），用户能直接敲或粘贴 `NaN` / `Infinity` / `1e999`，
+     * 而 `"NaN".toDoubleOrNull()` 返回的就是 NaN——它一旦存进模型，JSON 编码器每次都会抛，
+     * 而落盘异常在仓库里被吞掉：用户会以为一直在保存，其实从那一刻起什么都没写下去
+     * （后果与兜底见 `GroupRepositoryStoreRecoveryTest`）。
+     */
+    @Test
+    fun bulkEdit_nonFiniteAnglesAreRejected() {
+        launchResult()
+        for (line in listOf("NaN 20", "200 Infinity", "-Infinity 20", "1e999 20", "200 1e999")) {
+            bulkText(line)
+            confirmBulk()
+            // 被拒：弹窗保持打开，数据一个字节都没动
+            // （把 isFinite 守卫摘掉，下面第一行会先红：这行被收下就会关窗，找不到对话框）
+            onView(withId(R.id.bulkInput)).inRoot(isDialog()).check(matches(isDisplayed()))
+            val external = external()
+            assertEquals("这行不该被收下：$line", 3, external.size)
+            assertEquals(180.0, external[0].az, 1e-9)
+        }
+    }
+
+    /**
+     * 单点编辑的方位角框同样不许非有限数落到模型里。
+     *
+     * 注意这一格的「确定」是 Builder 装的默认监听，被拒也会照常关弹窗（批量编辑那个自己换了监听，
+     * 所以能留着），所以断言看的是值没变、而不是弹窗还在。把 `!az.isFinite()` 去掉，这条会红。
+     */
+    @Test
+    fun pointEditor_nonFiniteAzimuthNeverReachesTheModel() {
+        launchResult()
+        // 先关掉批量编辑弹窗，回到点列
+        onView(withText(R.string.cancel)).inRoot(isDialog()).perform(click())
+        onIdle()
+
+        onView(inRow(0, R.id.title)).perform(scrollTo(), click())
+        onView(withId(R.id.azInput)).inRoot(isDialog()).perform(replaceText("NaN"))
+        onView(withText(R.string.confirm)).inRoot(isDialog()).perform(click())
+        onIdle()
+        assertEquals(180.0, external()[0].az, 1e-9)
+
+        // 拒的是非有限数，不是这一格：换个正常值仍然要存得下去
+        onView(inRow(0, R.id.title)).perform(scrollTo(), click())
+        onView(withId(R.id.azInput)).inRoot(isDialog()).perform(replaceText("185.5"))
+        onView(withText(R.string.confirm)).inRoot(isDialog()).perform(click())
+        val external = TestSupport.waitFor { external().takeIf { it[0].az == 185.5 } }
+        assertEquals(3, external.size)
     }
 
     @Test

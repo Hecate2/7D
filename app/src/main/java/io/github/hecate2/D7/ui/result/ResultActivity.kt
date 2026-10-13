@@ -456,7 +456,12 @@ class ResultActivity : ComponentActivity() {
             .setPositiveButton(R.string.confirm) { _, _ ->
                 val az = view.azInput.text.toString().trim().toDoubleOrNull()
                 val el = view.elInput.text.toString().trim().toDoubleOrNull()
-                if (az == null || el == null || el !in 0.0..90.0) {
+                // 非有限数必须挡在入口：NaN / Infinity 一旦进了模型，JSON 编码器每次都会抛，
+                // 而落盘异常在仓库里是被吞掉的——用户会以为一直在保存，其实从这一刻起什么都没写下去
+                // （`"NaN".toDoubleOrNull()` 实测返回的就是 NaN，不是 null）。
+                // el 的范围判断顺带挡住 NaN 与 Infinity（NaN 与任何区间比较都是 false）；
+                // az 没有范围要求（归一化交给仓库），所以单独查一次有限性。
+                if (az == null || el == null || !az.isFinite() || el !in 0.0..90.0) {
                     toast(getString(R.string.point_edit_invalid))
                     return@setPositiveButton
                 }
@@ -596,7 +601,11 @@ class ResultActivity : ComponentActivity() {
             val parts = line.split(Regex("\\s+"))
             val az = parts.getOrNull(0)?.toDoubleOrNull()
             val el = parts.getOrNull(1)?.toDoubleOrNull()
-            if (az == null || el == null || parts.size > 3) return null to (i + 1)
+            // 非有限数与单点编辑同一道闸，理由见那里：NaN / Infinity 会让之后的落盘永久静默失败。
+            // 这一路 el 没有范围判断（归一化与夹取在 rowsToRecords 里做），而 coerceIn 挡不住 NaN。
+            if (az == null || el == null || !az.isFinite() || !el.isFinite() || parts.size > 3) {
+                return null to (i + 1)
+            }
             val horizon = when {
                 parts.size == 2 -> false
                 else -> when (parts[2].lowercase()) {

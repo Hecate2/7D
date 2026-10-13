@@ -12,11 +12,11 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.scrollTo
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.RootMatchers.isDialog
-import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
+import io.github.hecate2.D7.TestSupport.inRow
 import io.github.hecate2.D7.data.GroupRepository
 import io.github.hecate2.D7.data.PointRecord
 import io.github.hecate2.D7.data.Region
@@ -89,25 +89,6 @@ class ResultPointPhotoTest {
             ready
         }
     }
-
-    /**
-     * 点列第 [index] 行。行是 pointList 的直接子视图，且每次刷新都会整表重建，
-     * 所以只能按下标定位，不能留住 View 引用。
-     */
-    private fun rowAt(index: Int): Matcher<View> = object : TypeSafeMatcher<View>() {
-        override fun describeTo(description: Description) {
-            description.appendText("点列的第 $index 行")
-        }
-
-        override fun matchesSafely(item: View): Boolean {
-            val parent = item.parent as? ViewGroup ?: return false
-            return parent.id == R.id.pointList && parent.indexOfChild(item) == index
-        }
-    }
-
-    /** 第 [row] 行内的某个控件。 */
-    private fun inRow(row: Int, viewId: Int) =
-        allOf(withId(viewId), isDescendantOfA(rowAt(row)))
 
     @Test
     fun deletePoint_removesItsPhotoFromAlbum() {

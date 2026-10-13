@@ -57,6 +57,7 @@ data class Store(
  *
  * 落盘在单线程写队列上异步执行（先写临时文件再原子改名，文件系统不支持原子改名时回退普通改名），
  * 不阻塞调用线程；组记录按值快照处理，任何修改都生成新记录并经 [groups] 重新发射，界面据此刷新。
+ * 存档读不动时先把原文件挪成 `.bad` 留档再当空库用，绝不让一份空库把用户的数据覆盖掉（见 [readStore]）。
  *
  * 构造函数是 `internal`：除了 [get] 走 Context/filesDir 这条路，纯 JVM 单测也可直接传临时文件，
  * 从而把「读改写不串行化就丢点」这条回归护栏放进 `./gradlew test`，不必每次起设备。
@@ -220,8 +221,24 @@ class GroupRepository internal constructor(private val file: File) {
         return try {
             json.decodeFromString(Store.serializer(), file.readText())
         } catch (_: Exception) {
+            backupUnreadableStore()
             Store()
         }
+    }
+
+    /**
+     * 把读不动的存档挪成 `groups.json.<毫秒时间戳>.bad`。
+     *
+     * 原先读失败直接返回空 `Store()`，而紧接着的第一次修改就会把这份空库整份写回同一路径
+     * （见 [publish]）：内存里看着一切正常，用户的照片组却没了，盘上也看不出发生过什么。
+     * 挪走之后，即使后续写了新数据，旧数据仍然躺在同一个目录里，可以人工抢救。
+     *
+     * 带时间戳而不是固定名，是为了永远不覆盖更早的坏档——这类文件只增不减，而读失败本就罕见。
+     * 挪不动（目录只读、磁盘满）时静默退回原行为：那种文件本来也读不出来，新写入会覆盖它。
+     */
+    private fun backupUnreadableStore() {
+        val stamp = System.currentTimeMillis()
+        runCatching { file.renameTo(File(file.parentFile, "${file.name}.$stamp.bad")) }
     }
 
     private fun persist(store: Store) {

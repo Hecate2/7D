@@ -7,10 +7,14 @@ import android.net.Uri
 import android.os.Environment
 import android.provider.MediaStore
 import android.view.View
+import android.view.ViewGroup
 import android.widget.EditText
+import androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import io.github.hecate2.D7.data.GroupRepository
 import org.hamcrest.Description
 import org.hamcrest.Matcher
+import org.hamcrest.Matchers.allOf
 import org.hamcrest.TypeSafeMatcher
 
 /** 仪器测试公共助手：清库、轮询等待、往相册插入/查询测试图片。 */
@@ -92,4 +96,23 @@ object TestSupport {
             return edit.selectionStart == edit.selectionEnd
         }
     }
+
+    /**
+     * 点列第 [index] 行。行是 pointList 的直接子视图，且每次刷新都会整表重建，
+     * 所以只能按下标定位，不能留住 View 引用。
+     */
+    fun rowAt(index: Int): Matcher<View> = object : TypeSafeMatcher<View>() {
+        override fun describeTo(description: Description) {
+            description.appendText("点列的第 $index 行")
+        }
+
+        override fun matchesSafely(item: View): Boolean {
+            val parent = item.parent as? ViewGroup ?: return false
+            return parent.id == R.id.pointList && parent.indexOfChild(item) == index
+        }
+    }
+
+    /** 第 [row] 行内的某个控件。 */
+    fun inRow(row: Int, viewId: Int): Matcher<View> =
+        allOf(withId(viewId), isDescendantOfA(rowAt(row)))
 }
