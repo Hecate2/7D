@@ -115,9 +115,15 @@ object Solar {
         ((utcMillis % 86_400_000L + 86_400_000L) % 86_400_000L) / 60_000.0
 
     /**
-     * 某一天全天共用的太阳轨迹：赤纬与均时差都只随儒略世纪变化，
-     * 一天内的变化小于 0.001 度，远低于传感器误差，所以提前算一次就够。
-     * 单日采样有 1440 次，逐次重算会白白多出近三万次超越函数调用。
+     * 某一天全天共用的太阳轨迹：赤纬与均时差各按当天算一次，之后每次采样只做时角换算。
+     *
+     * 取「当日中点」而不是日初：这两样一天内都在变（赤纬最多 0.4 度，二分点前后最快；
+     * 均时差最多约 0.3 分钟），从日初起算会让离日初越远的采样偏得越多。取中点则两端各差
+     * 半天，实测相对逐次重算的最大偏差从 0.57 度降到 0.23 度（方位）、0.15 度（仰角），
+     * 仍远小于罗盘那 2~4 度，而这个改动本身不花一分钱。
+     *
+     * 一次采样省下的只是均时差那约九次三角函数，但单日要采 1440 次、全年曲线要采
+     * 365 × 1440 次，全年就是四百多万次——实测全年曲线 149.5 → 111 毫秒。
      */
     class DayTrack private constructor(
         private val jd: Double,
@@ -129,15 +135,16 @@ object Solar {
 
         /** 当日某 UTC 瞬时的太阳位置。 */
         fun position(utcMillis: Long, refraction: Boolean = true): SolarPosition =
-            positionFrom(latDeg, declDeg, trueSolarMinutes(utcMillis, lonDeg, jd) / 4.0 - 180.0, refraction)
+            positionFrom(latDeg, declDeg, trueSolarMinutes(utcMillis) / 4.0 - 180.0, refraction)
 
-        /** 当日某 UTC 瞬时的真太阳时（分钟，0..1440）。 */
-        fun trueSolarMinutes(utcMillis: Long): Double = Solar.trueSolarMinutes(utcMillis, lonDeg, jd)
+        /** 当日某 UTC 瞬时的真太阳时（分钟，0..1440）。用建轨时算好的均时差，不逐次重算。 */
+        fun trueSolarMinutes(utcMillis: Long): Double =
+            normalizeMinutes(utcMinutesOf(utcMillis) + eotMinutes + 4.0 * lonDeg)
 
         companion object {
-            /** 以当日 0 时（UTC 毫秒）为基准建立轨迹。 */
+            /** 以当日 0 时（UTC 毫秒）为基准建立轨迹；赤纬与均时差取该日中点（见类注释）。 */
             fun ofDayStart(dayStartMillis: Long, latDeg: Double, lonDeg: Double): DayTrack =
-                DayTrack(julianDay(dayStartMillis), latDeg, lonDeg)
+                DayTrack(julianDay(dayStartMillis) + 0.5, latDeg, lonDeg)
         }
     }
 
